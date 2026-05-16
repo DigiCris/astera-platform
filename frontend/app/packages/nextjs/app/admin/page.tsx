@@ -150,7 +150,9 @@ export default function AdminPage() {
   const { address } = useAccount();
   const supabase = createClient();
 
-  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({ contractName: "IdentityRegistry" });
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({
+    contractName: "AsteraIdentityRegistry",
+  });
 
   const [submissions, setSubmissions] = useState<IKycPending[]>([]);
   const [loading, setLoading] = useState(true);
