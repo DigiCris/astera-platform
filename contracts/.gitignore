@@ -1,5 +1,11 @@
 
 # Local/generated files
 cache/
+out/
 plant.txt
 plan.txt
+
+# Environment — never commit secrets
+.env
+.env.*
+!.env.example

@@ -31,22 +31,33 @@ These invariants are exercised by the current test suite (`test/unit/`, `test/in
 
 ---
 
-## Invariants Recommended for New Tests
+## Invariants Now Covered by New Tests
 
-These invariants are asserted by design and code review, but not exercised by any existing test.
+The following were previously untested. They are now exercised by `YearlyLimits.t.sol`, `FreezeAndForcedTransfer.t.sol`, and `CapAndLimits.t.sol` (fuzz).
+
+| # | Invariant | Test |
+|---|-----------|------|
+| I-19 | Only addresses in `authorizedExchanges` can call `exchangeTransfer`; any other caller reverts with `NotAuthorizedExchange` | `testExchangeTransferFromUnauthorizedCallerReverts` |
+| I-20 | Primary USDC goes directly to treasury; the primary exchange never holds USDC balance from a buy | `testPrimaryExchangeNeverHoldsUSDC` |
+| I-21 | Secondary market fee goes exclusively to `feeRecipient`; no USDC remains in secondary exchange after a fill | `testSecondaryExchangeNoResidualUSDCAfterFill` |
+| I-22 | `forcedTransfer` bypasses sender freeze but recipient must be compliant | `testForcedTransferFromFrozenSenderSucceeds`, `testForcedTransferFailsIfRecipientNotCompliant` |
+| I-27 | `adminForceCompliant` does not populate `agreements[user]` | `testAdminForceCompliantDoesNotCreateAgreement` (TermsAcceptance.t.sol) |
+| I-28 | A fully frozen user fails `isCompliant` regardless of agreement state | `testFreezeBlocksIsCompliant` |
+| I-F1 | `yearlySpent[user] ≤ yearlyLimitOf(user)` holds for any valid amount | `testFuzz_yearlySpentBoundedByLimit` (fuzz, 256 runs) |
+| I-F2 | `increaseSpent` reverts for any amount exceeding the limit; no state mutation on revert | `testFuzz_increaseSpentRevertsAboveLimit` (fuzz, 256 runs) |
+| I-F3 | `totalSupply ≤ cap` after any buy within the cap | `testFuzz_totalSupplyBoundedByCap` (fuzz, 256 runs) |
+| I-F4 | Any buy that would push supply past cap reverts; no tokens are minted | `testFuzz_buyRevertsIfWouldExceedCap` (fuzz, 256 runs) |
+
+---
+
+## Invariants Still Without Test Coverage
 
 | # | Invariant | Recommended test |
 |---|-----------|-----------------|
-| I-19 | Only addresses in `authorizedExchanges` can call `exchangeTransfer`; any other caller reverts with `NotAuthorizedExchange` | Unit test calling `exchangeTransfer` from an arbitrary address |
-| I-20 | Primary USDC goes directly to treasury; the primary exchange never holds USDC balance from a buy | Assert `usdc.balanceOf(primaryExchange) == 0` after every buy |
-| I-21 | Secondary market fee goes exclusively to `feeRecipient`; no USDC remains in secondary exchange after a fill | Assert residual balance is zero after each `executeSellOrder` |
-| I-22 | `forcedTransfer` bypasses sender freeze but recipient must be compliant | Test with frozen sender and non-compliant recipient; verify revert on non-compliant recipient |
 | I-23 | Buyer `yearlySpent` increases by exactly `grossUSDC` on secondary fill | Assert `identity.yearlySpent(buyer)` increment equals `grossUSDC` |
 | I-24 | Seller `yearlySpent` decreases by exactly `grossUSDC` on secondary fill | Assert `identity.yearlySpent(seller)` decrement equals `grossUSDC` |
 | I-25 | Seller cannot buy their own order (`CannotBuyOwnOrder`) | Test with seller as buyer |
 | I-26 | `amountToBuy` cannot exceed `amountRemaining` on an order | Test partial fill exceeding remaining amount |
-| I-27 | `adminForceCompliant` does not populate `agreements[user]` | Assert `agreements[user].signedDocumentHash == bytes32(0)` |
-| I-28 | A fully frozen user fails `isCompliant` regardless of agreement state | Assert `isCompliant(frozenUser) == false` even after `acceptTermsAndJoin` |
 | I-29 | `canTransfer(address(0), to, amount)` passes for mint if recipient is compliant | Verify mint succeeds for compliant users and fails for non-compliant |
 | I-30 | `setFeeRecipient` with zero address reverts | Assert `ZeroAddress` revert |
 

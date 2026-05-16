@@ -7,10 +7,14 @@
 ```
 test/
 ├── unit/
-│   ├── AsteraIdentityRegistry.t.sol   — identity registry unit tests
-│   └── TermsAcceptance.t.sol          — EIP-712 terms acceptance and compliance admin paths
+│   ├── AsteraIdentityRegistry.t.sol   — identity registry core unit tests
+│   ├── YearlyLimits.t.sol             — setYearlyLimit, canInvest, remainingLimit, removeUser
+│   ├── TermsAcceptance.t.sol          — EIP-712 terms acceptance and compliance admin paths
+│   └── FreezeAndForcedTransfer.t.sol  — freeze/unfreeze, forcedTransfer, reservedForSale accounting
 ├── integration/
 │   └── ExchangeFlow.t.sol             — full primary → funding close → secondary flow
+├── fuzz/
+│   └── CapAndLimits.t.sol             — fuzz: totalSupply ≤ cap, yearlySpent ≤ limit invariants
 └── fork/
     └── AvalancheUSDCFork.t.sol        — sanity check of real Avalanche C-Chain USDC contract
 ```
@@ -32,7 +36,7 @@ Tests the identity registry in isolation.
 | `testDecreaseSpentCannotUnderflow` | `decreaseSpent` clamps to 0, never underflows |
 | `testRollingYearResetUpdatesCycleStart` | After 365 days, `yearlySpent` resets and cycle start advances |
 
-**Notable gaps**: no tests for `setYearlyLimit`, `setExchange`, `removeUser`, `canInvest`, `remainingLimit` directly, or the case where `resetYearIfNeeded` is called explicitly.
+**Notable gaps**: no tests for `setExchange`, `canInvest` / `remainingLimit` with multiple sequential investments in the same cycle, or explicit `resetYearIfNeeded` call. Covered separately in `YearlyLimits.t.sol`.
 
 ---
 
@@ -50,7 +54,7 @@ Tests EIP-712 agreement acceptance and all compliance admin paths. Uses a full s
 | `adminForceCompliant` | Makes user compliant, reverts for non-admin, non-registered, empty reason, already compliant; does not create agreement; emits event |
 | Project token creation | Stores document hash and URI immutably; reverts on zero hash or empty URI; emits full metadata |
 
-**Notable gaps**: no tests for `freeze`, `unfreeze`, `freezePartial`, `setFundingCompleted`, `removeCompliantUser`, or the `canTransfer` / `canForcedTransfer` views directly.
+**Notable gaps**: no tests for `freezePartial` in isolation, or the `canTransfer` / `canForcedTransfer` views called directly. Freeze/unfreeze and `removeCompliantUser` are covered in `FreezeAndForcedTransfer.t.sol`.
 
 ---
 
@@ -79,7 +83,65 @@ End-to-end integration test covering the full protocol lifecycle. Uses full wire
 | `grossUSDC == 0` guard | `executeSellOrder` reverts if price rounds to zero |
 | Happy path end-to-end | Buy primary → close funding → create order → partial fill → cancel remaining |
 
-**Notable gaps**: no tests for `forcedTransfer`, `decreaseSpent` directly, yearly limit exceeded on secondary buy, `cancelSellOrder` by non-seller revert, fee of 0 bps edge case, or multi-token scenarios.
+**Notable gaps**: no tests for `decreaseSpent` directly, fee of 0 bps edge case, or multi-token isolation scenarios. `forcedTransfer`, secondary yearly limit exceeded, and `cancelSellOrder` by non-seller are now covered in `FreezeAndForcedTransfer.t.sol`.
+
+---
+
+### `test/unit/YearlyLimits.t.sol`
+
+Unit tests for per-wallet investment limit configuration in `AsteraIdentityRegistry`.
+
+| Test | What it checks |
+|------|---------------|
+| `testSetYearlyLimitCustomOverridesDefault` | Custom limit replaces DEFAULT_YEARLY_LIMIT |
+| `testSetYearlyLimitZeroRestoresDefault` | Setting limit to 0 reverts to platform default |
+| `testSetYearlyLimitEmitsEvent` | `YearlyLimitUpdated` event emitted with correct args |
+| `testSetYearlyLimitOnlyAdmin` | Non-admin cannot call `setYearlyLimit` |
+| `testCustomLimitBlocksExceedingAmount` | `increaseSpent` reverts above custom limit with typed error |
+| `testCustomLimitAllowsExactAmount` | Spending exactly the custom limit succeeds |
+| `testRemainingLimitDecreasesAfterSpend` | `remainingLimit` reflects current spend correctly |
+| `testRemainingLimitIsZeroWhenAtLimit` | `remainingLimit` returns 0 at the cap |
+| `testRemainingLimitTreatsExpiredCycleAsFullReset` | View treats expired cycle as zero spend without writing state |
+| `testCanInvestReturnsFalseForUnregisteredUser` | Unregistered address always returns false |
+| `testCanInvestReturnsTrueWithinLimit` | Returns true for registered user with capacity |
+| `testCanInvestReturnsFalseWhenAtLimit` | Returns false when no remaining capacity |
+| `testRemoveUserClearsRegistration` | `removeUser` sets `isRegistered` to false |
+| `testRemoveUserBlocksIncreaseSpent` | `increaseSpent` reverts for removed user |
+| `testRemoveUserEmitsEvent` | `UserRemoved` event emitted |
+| `testOnlyAdminCanRemoveUser` | Non-admin cannot call `removeUser` |
+
+---
+
+### `test/unit/FreezeAndForcedTransfer.t.sol`
+
+Tests for compliance escape hatches and secondary accounting correctness. Uses a full wired stack.
+
+| Test group | Coverage |
+|------------|---------|
+| freeze / unfreeze | `isCompliant` blocked/restored, `canTransfer` blocked, events, admin-only access control |
+| Frozen user secondary | Frozen holder cannot create sell orders; frozen buyer cannot execute |
+| forcedTransfer | Happy path; frozen sender; recipient not compliant (reverts); insufficient balance (reverts); event; non-admin (reverts) |
+| removeCompliantUser | Revokes compliance; blocks canTransfer; event; admin-only |
+| reservedForSale accounting | Set on createSellOrder; released on cancel; released on full fill; decreased on partial fill |
+| cancelSellOrder access control | Non-seller revert with `NotOrderSeller` |
+| Secondary yearly limit exceeded | `InvestmentLimitExceeded` on executeSellOrder |
+| exchangeTransfer authorization | Unauthorized caller reverts with `NotAuthorizedExchange` |
+| Primary exchange USDC balance | Primary exchange never holds USDC after a buy |
+| Secondary exchange residual USDC | Secondary exchange holds zero USDC after a fill |
+
+---
+
+### `test/fuzz/CapAndLimits.t.sol`
+
+Fuzz tests (256 runs each) for the two most critical numeric invariants.
+
+| Test | Invariant verified |
+|------|--------------------|
+| `testFuzz_yearlySpentBoundedByLimit` | After any `increaseSpent(amount)` with `amount ≤ limit`, `yearlySpent ≤ limit` |
+| `testFuzz_increaseSpentRevertsAboveLimit` | Any `amount > limit` causes revert; `yearlySpent` unchanged |
+| `testFuzz_totalSupplyBoundedByCap` | After any buy within cap and yearly limit, `totalSupply ≤ cap` |
+| `testFuzz_buyRevertsIfWouldExceedCap` | Any buy that would push supply past cap reverts; no tokens minted |
+| `testFuzz_quoteUSDCIsZeroForSmallInputs` | `quoteUSDC` returns 0 when product < 1e6; verifies rounding domain |
 
 ---
 
@@ -91,6 +153,21 @@ Requires a live Avalanche C-Chain RPC. Excluded from the default `forge test` ru
 |------|---------------|
 | `testAvalancheUSDCExists` | USDC address has deployed bytecode on Avalanche C-Chain |
 | `testAvalancheUSDCTotalSupplyCanBeRead` | `totalSupply()` is readable and > 0 |
+
+---
+
+## Remaining Coverage Gaps
+
+The following areas still have no test coverage:
+
+| Area | Risk |
+|------|------|
+| Fee of 0 bps | Zero fee edge case: seller receives full grossUSDC, feeRecipient receives nothing |
+| Multi-token scenarios | Isolation between projects: one project's compliance/freeze should not affect another |
+| `decreaseSpent` direct assertion | Only tested indirectly via secondary fill; no unit-level assertion of the exact decrement |
+| Funding deadline exact boundary | Exact deadline timestamp (`block.timestamp == fundingDeadline`) not tested |
+| `setExchange` revoke path | Revoking `EXCHANGE_ROLE` immediately prevents accounting writes — not exercised |
+| Partial freeze + secondary combined | `frozenAmount + reservedForSale > balance` boundary not directly tested |
 
 ---
 
@@ -109,37 +186,3 @@ forge test --match-path test/fork/AvalancheUSDCFork.t.sol --fork-url $AVALANCHE_
 # Coverage report
 forge coverage
 ```
-
----
-
-## Test Coverage Gaps
-
-The following areas have no test coverage in the current suite:
-
-| Area | Risk |
-|------|------|
-| `forcedTransfer` path | Admin-only exceptional transfer is not exercised; bypass of sender freeze not verified |
-| `freeze` / `unfreeze` full blocking | Full freeze effect on secondary transfers not directly tested |
-| Yearly limit exceeded on secondary buy | `InvestmentLimitExceeded` in secondary exchange not tested |
-| `cancelSellOrder` by non-seller | Access control revert not tested |
-| `removeCompliantUser` | Compliance revocation not tested |
-| `setYearlyLimit` / custom limits | Per-wallet limit override not tested |
-| Fee of 0 bps | Zero fee edge case not tested |
-| Multi-token scenarios | Isolation between projects not tested |
-| `decreaseSpent` clamping | Tested indirectly; no direct assertion |
-| Funding deadline edge cases | Exact deadline timestamp (not just +1) not tested |
-
----
-
-## Recommended Future Tests
-
-| Test type | Rationale |
-|-----------|-----------|
-| Invariant / fuzzing on accounting | `yearlySpent` and `reservedForSale` are critical accounting state; fuzz for under/overflow and inconsistency |
-| Invariant: `totalSupply <= cap` | Verify no code path can mint past cap |
-| Fuzzing: `grossUSDC` rounding | Verify zero-USDC guard covers all edge cases |
-| `forcedTransfer` path | Verify frozen sender can be transferred from, recipient must be compliant |
-| Admin path exhaustive coverage | All admin reverts and success cases for freeze, removal, limit changes |
-| Deadline boundary | Test at exact deadline timestamp |
-| Multi-project isolation | Verify one project's state does not affect another |
-| Partial freeze + secondary sell | Verify `reservedForSale` + `frozenAmount` combination is correctly bounded |
