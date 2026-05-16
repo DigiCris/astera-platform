@@ -82,6 +82,11 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
+          <div>
+            <h4 className="text-2xl font-bold text-center">Riesgo Wave Node</h4>
+            <h4 className="text-xl font-medium text-center text-green-500">BAJO</h4>
+          </div>
+
           {/* SECCIÓN 1: DATOS PERSONALES */}
           <div>
             <h4 className="text-sm font-semibold text-primary flex items-center gap-2 mb-3 uppercase tracking-wider">
