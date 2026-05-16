@@ -19,7 +19,9 @@ import { Input } from "../ui/shadcn/input";
 import { Label } from "../ui/shadcn/label";
 import { Separator } from "../ui/shadcn/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/shadcn/tabs";
-import { ArrowLeft, ArrowRight, Check, DollarSign, Upload, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, DollarSign, Download, FileText, Upload, Wallet } from "lucide-react";
+import { useAccount } from "wagmi";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 interface InvestmentModalProps {
   trigger?: React.ReactNode;
@@ -34,6 +36,8 @@ interface InvestmentModalProps {
 }
 
 export function InvestmentModal({ trigger, open, onOpenChange, project }: InvestmentModalProps) {
+  const { address } = useAccount();
+  //states
   const [step, setStep] = useState(1);
   const [investmentAmount, setInvestmentAmount] = useState(project.minimumInvestment.toString());
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -41,7 +45,14 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
 
-  const totalSteps = 4;
+  //smart contract
+  const { data: isCompliant } = useScaffoldReadContract({
+    contractName: "AsteraComplianceManager",
+    functionName: "isCompliant",
+    args: [address],
+  });
+
+  const totalSteps = isCompliant ? 3 : 4;
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -117,7 +128,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
         {renderStepIndicator()}
 
-        {step === 1 && (
+        {step === 1 && isCompliant ? (
           <div className="space-y-4 py-2">
             <div className="flex items-center gap-4 p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
               <div className="relative h-16 w-16 overflow-hidden rounded-md shrink-0">
@@ -178,6 +189,151 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                 </CardContent>
               </Card>
             </div>
+          </div>
+        ) : (
+          <div className="space-y-2 py-2">
+            <div className="space-y-2">
+              <div className="flex justify-center">
+                <Button
+                  onClick={async () => {
+                    const pdfUrl =
+                      "https://ivory-accessible-owl-927.mypinata.cloud/ipfs/bafkreiaycpbk6u5a2j6o7j3pwmn7qakvmgix2kt2queuiw733gqvn27kl4";
+
+                    try {
+                      // 1. Descargamos el archivo como datos binarios (Blob)
+                      const response = await fetch(pdfUrl);
+                      if (!response.ok) throw new Error("Error al descargar el archivo");
+
+                      const blob = await response.blob();
+
+                      // 2. Creamos una URL local apuntando a ese Blob
+                      const url = window.URL.createObjectURL(blob);
+
+                      // 3. Creamos un enlace invisible para forzar la descarga
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "Contrato_Fideicomiso.pdf"; // El nombre con el que se guardará el archivo
+                      document.body.appendChild(a);
+
+                      // 4. Simulamos el clic y limpiamos el DOM
+                      a.click();
+                      a.remove();
+                      window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                      console.error("Error descargando el PDF:", error);
+                      alert("No se pudo descargar el archivo automáticamente. Intentando abrir en nueva pestaña...");
+                      // Plan B por si falla el fetch (CORS u otros motivos)
+                      window.open(pdfUrl, "_blank");
+                    }
+                  }}
+                >
+                  <Download className="w-5 h-5 mr-2" />
+                  Descargar Fideicomiso
+                </Button>
+              </div>
+
+              <Label className="text-filabe-text mt-5">Subir Fideicomiso firmado digitalmente</Label>
+
+              <div className="mt-2 rounded-lg border border-dashed border-filabe-lightgray transition-colors hover:bg-filabe-dark/20">
+                {proofPreview ? (
+                  /* ESTADO 1: ARCHIVO CARGADO (Mantiene el diseño de remoción anterior) */
+                  <div className="flex flex-col items-center justify-center p-8 space-y-4 w-full">
+                    <div className="relative h-40 w-full overflow-hidden rounded-lg">
+                      {/* Si es un PDF mostramos un placeholder/ícono, si es imagen se previsualiza */}
+                      {proofFile?.type === "application/pdf" ? (
+                        <div className="flex flex-col items-center justify-center h-full w-full bg-filabe-dark/40 rounded-lg text-filabe-text/80">
+                          <FileText className="h-12 w-12 text-filabe-teal mb-2" />
+                          <span className="text-sm font-medium px-4 text-center truncate max-w-xs">
+                            {proofFile.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <Image
+                          src={proofPreview || "/placeholder.svg"}
+                          alt="Fideicomiso firmado"
+                          fill
+                          className="object-contain"
+                        />
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full border-filabe-lightgray text-filabe-text hover:bg-filabe-dark"
+                      onClick={() => {
+                        setProofFile(null);
+                        setProofPreview(null);
+                      }}
+                    >
+                      Eliminar y Subir Otro Documento
+                    </Button>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="proof-upload"
+                    className="flex flex-col items-center justify-center p-8 cursor-pointer w-full text-center group"
+                  >
+                    <Upload className="h-8 w-8 text-filabe-text/70 mb-3 transition-colors group-hover:text-filabe-teal" />
+
+                    <p className="text-sm text-filabe-text/90 font-medium mb-1">
+                      Arrastra y suelta el documento de fideicomiso firmado aquí
+                    </p>
+
+                    <p className="text-xs text-filabe-text/60 mb-4">
+                      o haz clic en cualquier parte de este cuadro para buscar en tus archivos
+                    </p>
+
+                    <span className="text-[11px] px-3 py-1 bg-filabe-dark rounded-full text-filabe-text/50 border border-filabe-lightgray/30">
+                      Formatos soportados: PDF (Máx 5MB)
+                    </span>
+
+                    {/* El input nativo queda completamente invisible pero activo en todo el label */}
+                    <Input
+                      id="proof-upload"
+                      type="file"
+                      accept=".pdf"
+                      className="hidden" // O "sr-only"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+            {/* 
+            <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
+              <h3 className="font-medium mb-2 flex items-center text-filabe-text">
+                <Check className="h-4 w-4 mr-2 text-filabe-teal" /> Resumen de Inversión
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-filabe-text/70">Proyecto:</span>
+                  <span className="font-medium text-filabe-text">{project.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-filabe-text/70">Monto de Inversión:</span>
+                  <span className="font-medium text-filabe-text">
+                    ${Number.parseFloat(investmentAmount).toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-filabe-text/70">Método de Pago:</span>
+                  <span className="font-medium text-filabe-text capitalize">
+                    {paymentMethod === "bank" ? "Transferencia Bancaria" : "Criptomoneda"}
+                  </span>
+                </div>
+                <Separator className="bg-filabe-lightgray" />
+                <div className="flex justify-between">
+                  <span className="text-filabe-text/70">Estado:</span>
+                  <span className="font-medium text-yellow-500">Pendiente de Verificación</span>
+                </div>
+              </div>
+              <div className="mt-4 text-sm text-filabe-text/70">
+                <p>
+                  Nuestro equipo verificará tu pago en un plazo de 1-2 días hábiles. Recibirás un correo electrónico de
+                  confirmación una vez que tu inversión sea procesada.
+                </p>
+              </div>
+            </div> */}
           </div>
         )}
 
