@@ -16,24 +16,24 @@
 
 ## Platform Contracts
 
-> **Status: not yet deployed on mainnet.** Fill in after running `DeployPlatform.s.sol`.
+> **Status: deployed and verified on mainnet.** Deploy block: 2026-05-16.
 
 | Contract | Address | Status |
 |----------|---------|--------|
-| `AsteraIdentityRegistry` | TBD | Not deployed |
-| `AsteraPrimaryExchange` | TBD | Not deployed |
-| `AsteraSecondaryExchange` | TBD | Not deployed |
+| `AsteraIdentityRegistry` | `0x0B66baEF242C8aB2bFe387DC9a5412c7f903Eca1` | **Production** — verified |
+| `AsteraPrimaryExchange` | `0x89B2b2FE6fC68a865A258c2C99adaCF5aF4c5A35` | **Production** — verified |
+| `AsteraSecondaryExchange` | `0x2F5A5198635DfE5a06Cc09597f66ec7522Be29fc` | **Production** — verified |
 
 ---
 
 ## Operational Addresses
 
-> Fill in after platform deploy.
-
 | Role | Address | Notes |
 |------|---------|-------|
-| Admin / PSAV | TBD | Holds all admin roles on platform contracts |
-| Fee recipient | TBD | Receives secondary market fees |
+| Admin / deployer | `0xd22077414e8859BA08723fEC0ac54D0365346D1e` | Holds `DEFAULT_ADMIN_ROLE` + all admin roles on platform contracts |
+| Co-admin 1 | `0x38fF5bBb1F41f1fA4EC59C07DdFe5FA6452d9814` | `DEFAULT_ADMIN_ROLE` + `IDENTITY_ADMIN_ROLE` + `EXCHANGE_ADMIN_ROLE` on all platform contracts |
+| Co-admin 2 | `0xe27cF5376ab219CA50C0C4D90506A8C5DfABCA77` | `DEFAULT_ADMIN_ROLE` + `IDENTITY_ADMIN_ROLE` + `EXCHANGE_ADMIN_ROLE` on all platform contracts |
+| Fee recipient | `0xd22077414e8859BA08723fEC0ac54D0365346D1e` | Receives secondary market fees |
 
 ---
 

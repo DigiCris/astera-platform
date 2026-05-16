@@ -102,12 +102,12 @@ Repeat for `AsteraIdentityRegistry`, `AsteraPrimaryExchange`, `AsteraSecondaryEx
 
 After each deployment step, verify:
 
-- [ ] `AsteraIdentityRegistry` address recorded
-- [ ] `AsteraPrimaryExchange` address recorded
-- [ ] `AsteraSecondaryExchange` address recorded
-- [ ] Both exchanges hold `EXCHANGE_ROLE` on identity registry
-- [ ] `exchangeSecondary` on primary exchange points to secondary exchange
-- [ ] If co-admins were added: roles confirmed on each contract
+- [x] `AsteraIdentityRegistry` address recorded — `0x0B66baEF242C8aB2bFe387DC9a5412c7f903Eca1`
+- [x] `AsteraPrimaryExchange` address recorded — `0x89B2b2FE6fC68a865A258c2C99adaCF5aF4c5A35`
+- [x] `AsteraSecondaryExchange` address recorded — `0x2F5A5198635DfE5a06Cc09597f66ec7522Be29fc`
+- [x] Both exchanges hold `EXCHANGE_ROLE` on identity registry (set in `DeployPlatform`)
+- [x] `exchangeSecondary` on primary exchange points to secondary exchange (set in `DeployPlatform`)
+- [x] Co-admins added: roles confirmed on each contract (`GrantPlatformRoles` run 2026-05-16)
 - [ ] `AsteraToken` address recorded
 - [ ] `AsteraComplianceManager` address recorded and bound to token
 - [ ] `compliance` field on token matches deployed compliance manager address
@@ -116,4 +116,4 @@ After each deployment step, verify:
 - [ ] Secondary exchange is in `authorizedExchanges` on the token
 - [ ] `softCap` and `fundingDeadline` on compliance manager are correct
 - [ ] `feeRecipient` and `feeBps` on primary exchange are correct
-- [ ] All deployed contracts are verified on Routescan/Snowscan (for production)
+- [x] All platform contracts verified on Routescan/Snowscan (2026-05-16)
