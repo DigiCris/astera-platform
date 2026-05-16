@@ -156,8 +156,6 @@ export default function KYCPage() {
     setIsSubmitting(true);
 
     try {
-      // 🌟 REGLA DE ORO: Capturamos y congelamos la wallet al inicio exacto.
-      // Nada fuera de esta constante puede cambiar durante la ejecución.
       const currentWallet = address.toLowerCase();
 
       let frontPath = null;

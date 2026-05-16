@@ -23,30 +23,6 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
   const supabase = createClient();
   const [loadingPath, setLoadingPath] = useState<string | null>(null);
 
-  // const handleViewDocument = async (path: string) => {
-  //   if (!path) return;
-
-  //   try {
-  //     setLoadingPath(path);
-
-  //     const { data, error } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(path, 120); // La URL expirará y dejará de funcionar en 2 minutos (120 seg)
-
-  //     if (error) {
-  //       console.error("Error al generar URL firmada:", error.message);
-  //       alert("No se pudo obtener el documento de forma segura.");
-  //       return;
-  //     }
-
-  //     if (data?.signedUrl) {
-  //       window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-  //     }
-  //   } catch (err) {
-  //     console.error("Exception opening document:", err);
-  //   } finally {
-  //     setLoadingPath(null);
-  //   }
-  // };
-
   const handleViewDocument = async (path: string) => {
     if (!path) return;
 
