@@ -8,8 +8,12 @@ import { IAsteraIdentityRegistry } from "../interfaces/IAsteraIdentityRegistry.s
 import { IAsteraToken } from "../interfaces/IAsteraToken.sol";
 
 /// @title AsteraComplianceManager
-/// @notice Enforces compliance rules, transfer restrictions, freezes, limits, and market
-/// eligibility. Per-project compliance module for the Astera tokenization flow.
+/// @notice Per-project compliance module for a tokenized asset. Manages transfer eligibility,
+///         freezes, funding lifecycle, and documentary evidence of investor agreement.
+/// @dev Each AsteraToken deploys exactly one AsteraComplianceManager at construction time.
+///      Platform-level KYC lives in AsteraIdentityRegistry; this contract handles project-specific
+///      rules. The split allows a single KYC approval to cover multiple projects while each
+///      instrument enforces its own terms acceptance, soft cap, deadline, and freeze controls.
 contract AsteraComplianceManager is AccessControl, EIP712 {
     using ECDSA for bytes32;
 
@@ -20,10 +24,16 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
         "AgreementAcceptance(bytes32 genericDocumentHash,string genericDocumentURI,bytes32 signedDocumentHash,address user)"
     );
 
+    /// @notice Token contract this compliance module is bound to. Immutable after deployment.
     address public immutable token;
     address public immutable identityRegistry;
+    /// @notice Destination for primary-sale USDC proceeds. Represents the project trust/fideicomiso
+    /// wallet.
     address public immutable treasury;
+    /// @notice Minimum token supply (6-decimal units) required before funding can be manually
+    /// closed.
     uint256 public immutable softCap;
+    /// @notice Unix timestamp after which primary purchases are blocked and manual close reverts.
     uint256 public immutable fundingDeadline;
 
     /// @notice keccak256 of the canonical legal document PDF for this project. Fixed at creation.
@@ -32,19 +42,30 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     /// @notice IPFS/URI of the canonical legal document PDF for this project. Fixed at creation.
     string public genericDocumentURI;
 
+    /// @notice True once funding is complete; gates secondary market activity.
+    /// @dev Set either manually via setFundingCompleted (admin, requires softCap reached) or
+    ///      automatically via autoCompleteFunding (token, when totalSupply reaches cap).
     bool public fundingCompleted;
 
+    /// @notice On-chain evidence record for a user's acceptance of project terms.
+    /// @dev The signed PDF is stored off-chain; only its hash and the EIP712 signature are kept
+    /// here. Combines genericDocumentHash (base document set by admin) with signedDocumentHash
+    /// (user's
+    ///      individually signed PDF), binding both to the user's wallet via EIP712.
     struct SignedAgreement {
-        bytes32 signedDocumentHash;
-        bytes signature;
+        bytes32 signedDocumentHash; // keccak256 of the holographically signed PDF
+        bytes signature; // EIP712 signature produced by the user's wallet
         uint256 timestamp;
-        bool selfService;
+        bool selfService; // true if user submitted directly; false if admin relayed
     }
 
     mapping(address user => bool compliant) private _compliant;
     mapping(address user => bool frozen) private _frozen;
+    /// @notice Amount of tokens (6-decimal units) locked for this user via partial freeze.
     mapping(address user => uint256 amount) public frozenAmount;
 
+    /// @notice Stores signed agreement evidence per user. Not populated for adminForceCompliant
+    /// paths.
     mapping(address user => SignedAgreement) public agreements;
 
     /// @notice Tracks consumed signed-document hashes to prevent reuse across users.
@@ -85,6 +106,17 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     error DocumentAlreadyUsed();
     error InvalidDocumentHash();
 
+    /// @notice Deploys the compliance module for a single tokenized project.
+    /// @dev Initializes EIP712 domain ("AsteraCompliance", version "1") bound to this contract.
+    ///      treasury_ receives all primary-sale USDC; no exchange contract custodies those funds.
+    ///      genericDocumentHash_ and genericDocumentURI_ define the base legal document that all
+    ///      investors sign — the user does not choose the document; the admin sets it at
+    /// creation.
+    /// @param softCap_ Minimum supply in 6-decimal token units required for manual funding close.
+    /// @param fundingDeadline_ Unix timestamp; primary purchases and manual close revert after
+    /// this. @param genericDocumentHash_ keccak256 of the canonical legal document distributed to
+    /// investors.
+    /// @param genericDocumentURI_ IPFS or HTTP URI where the canonical document can be retrieved.
     constructor(
         address identityRegistry_,
         address token_,
@@ -119,13 +151,24 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     // ─── EIP712 term acceptance
     // ───────────────────────────────────────────
 
-    /// @notice Self-service: user signs EIP712 typed data and submits on-chain.
+    /// @notice Self-service onboarding: user submits their EIP712 signature directly.
+    /// @dev The signed payload commits the caller's wallet to this project's genericDocumentHash,
+    ///      genericDocumentURI, and the hash of their personally signed PDF. The PDF is kept
+    ///      off-chain; on-chain evidence is signedDocumentHash + signature + timestamp stored in
+    ///      agreements[user].
+    /// @param signedDocumentHash keccak256 of the holographically signed PDF unique to this user.
+    /// @param signature EIP712 signature over AgreementAcceptance produced by msg.sender's wallet.
     function acceptTermsAndJoin(bytes32 signedDocumentHash, bytes calldata signature) external {
         _acceptTerms(msg.sender, signedDocumentHash, signature, true);
     }
 
-    /// @notice Admin path: operator submits the user's pre-collected EIP712 signature.
-    /// @dev Admin cannot bypass signature validation; signer must equal user.
+    /// @notice Admin-relayed onboarding: operator submits a user's pre-collected EIP712 signature.
+    /// @dev Allows the backend to pay gas on behalf of the user. The user's wallet must still be
+    /// the EIP712 signer — the admin cannot bypass signature validation or substitute a different
+    ///      signer. msg.sender is the relaying operator; the recovered signer must equal user.
+    /// @param user Wallet address that produced the signature off-chain.
+    /// @param signedDocumentHash keccak256 of the holographically signed PDF unique to this user.
+    /// @param signature EIP712 signature over AgreementAcceptance produced by user's wallet.
     function adminAcceptTermsAndJoin(
         address user,
         bytes32 signedDocumentHash,
@@ -190,8 +233,12 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     // ─── Admin compliance management
     // ──────────────────────────────────────
 
-    /// @notice Emergency escape hatch for operational recovery. Does NOT generate an EIP712 record.
-    /// @dev Leaves an explicit on-chain event for audit traceability.
+    /// @notice Marks a user compliant without storing a signed agreement.
+    /// @dev Emergency/admin-only escape hatch for exceptional operational cases (e.g. technical
+    ///      failure during normal onboarding). Does not populate agreements[user]. Emits an
+    /// auditable event with a mandatory reason string. Must not be used as the standard onboarding
+    /// path.
+    /// @param reason Human-readable justification required for audit traceability.
     function adminForceCompliant(address user, string calldata reason)
         external
         onlyRole(COMPLIANCE_ADMIN_ROLE)
@@ -208,24 +255,35 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
         emit AdminForceCompliant(user, msg.sender, reason, block.timestamp);
     }
 
+    /// @notice Revokes project-level compliance for a user (e.g. investor request or regulatory
+    /// action). @dev Does not affect the user's global KYC registration in AsteraIdentityRegistry.
     function removeCompliantUser(address user) external onlyRole(COMPLIANCE_ADMIN_ROLE) {
         if (user == address(0)) revert ZeroAddress();
         _compliant[user] = false;
         emit CompliantRemoved(user);
     }
 
+    /// @notice Fully freezes a user, blocking all token movements for this project.
+    /// @dev isCompliant returns false while frozen regardless of agreement state. Used for
+    ///      regulatory holds that must block the entire balance.
     function freeze(address user) external onlyRole(COMPLIANCE_ADMIN_ROLE) {
         if (user == address(0)) revert ZeroAddress();
         _frozen[user] = true;
         emit Frozen(user);
     }
 
+    /// @notice Lifts a full freeze, restoring normal compliance status if other conditions are met.
     function unfreeze(address user) external onlyRole(COMPLIANCE_ADMIN_ROLE) {
         if (user == address(0)) revert ZeroAddress();
         _frozen[user] = false;
         emit Unfrozen(user);
     }
 
+    /// @notice Locks a specific token amount, preventing that portion from being transferred or
+    /// sold. @dev Does not block the remaining available balance. Used for regulatory holds on a
+    /// subset of
+    ///      holdings without fully freezing the account.
+    /// @param amount Amount in 6-decimal token units to lock.
     function freezePartial(address user, uint256 amount) external onlyRole(COMPLIANCE_ADMIN_ROLE) {
         if (user == address(0)) revert ZeroAddress();
         frozenAmount[user] = amount;
@@ -237,6 +295,9 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
 
     /// @notice Manual close: irreversibly enables secondary market if softCap reached and deadline
     /// not expired.
+    /// @dev If the deadline expires without this call and without cap-triggered auto-close, the
+    ///      secondary market never opens. There is no automatic refund mechanism in this version;
+    ///      refund/redeem flows are out of scope for the current MVP.
     function setFundingCompleted() external onlyRole(COMPLIANCE_ADMIN_ROLE) {
         if (fundingCompleted) revert AlreadyCompleted();
         if (block.timestamp > fundingDeadline) revert DeadlineExpired();
@@ -249,6 +310,8 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     }
 
     /// @notice Auto-close triggered by the token when totalSupply reaches maxSupply (cap).
+    /// @dev Only callable by the bound token contract to enforce atomic close on the final mint.
+    ///      Skips the softCap check because reaching cap implies softCap was already exceeded.
     function autoCompleteFunding() external {
         if (msg.sender != token) revert UnauthorizedAutoClose();
         if (fundingCompleted) revert AlreadyCompleted();
@@ -261,6 +324,8 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     // ─── Views
     // ────────────────────────────────────────────────────────────
 
+    /// @notice Returns true only if the user is KYC-registered, project-compliant, and not fully
+    /// frozen.
     function isCompliant(address user) public view returns (bool) {
         if (user == address(0) || !_compliant[user] || _frozen[user]) return false;
         return IAsteraIdentityRegistry(identityRegistry).isRegistered(user);
@@ -270,14 +335,19 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
         return _frozen[user];
     }
 
+    /// @notice Returns the token balance available for transfer or sell-order reservation, after
+    ///         subtracting partial freeze.
+    /// @param balance The user's current token balance (passed in to avoid a redundant external
+    /// call).
     function availableBalance(address user, uint256 balance) public view returns (uint256) {
         uint256 frozen = frozenAmount[user];
         return frozen >= balance ? 0 : balance - frozen;
     }
 
-    /// @notice Standard compliance validation for mint/secondary exchange transfers.
-    /// @dev address(0) for `from` means mint; address(0) for `to` means sell-order reservation
-    /// check.
+    /// @notice Standard compliance validation for mint and secondary exchange transfers.
+    /// @dev address(0) for `from` signals a mint operation (no sender checks apply).
+    ///      address(0) for `to` signals a sell-order reservation check (validates only the seller's
+    ///      available balance and compliance, without a recipient).
     function canTransfer(address from, address to, uint256 amount) external view returns (bool) {
         if (amount == 0) return false;
 
@@ -295,6 +365,8 @@ contract AsteraComplianceManager is AccessControl, EIP712 {
     }
 
     /// @notice Forced transfer check. Sender freezes are intentionally bypassed for admin actions.
+    /// @dev Recipient must still be fully compliant. Intended for legal/operational corrections
+    /// only.
     function canForcedTransfer(address from, address to, uint256 amount)
         external
         view

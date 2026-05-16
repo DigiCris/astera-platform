@@ -18,28 +18,43 @@ interface IAsteraPrimaryExchange {
 }
 
 /// @title AsteraSecondaryExchange
-/// @notice Handles compliant secondary market operations and regulated asset transfers.
-/// @dev Reads token registry and fee config from AsteraPrimaryExchange.
+/// @notice Order-book secondary market for compliant peer-to-peer token trades after a project's
+///         funding round closes.
+/// @dev Separated from AsteraPrimaryExchange for modularity, operational clarity, and bytecode
+///      size. Token registry and fee config are read from AsteraPrimaryExchange to avoid
+///      duplication. Direct user-to-user token transfers are prohibited; this exchange is the
+///      only authorised path for secondary movements, preserving compliance checks and annual
+///      investment accounting on every trade.
 contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     bytes32 public constant EXCHANGE_ADMIN_ROLE = keccak256("EXCHANGE_ADMIN_ROLE");
 
+    /// @notice Scaling factor for the price formula: tokenAmount * unitPriceUSDC / TOKEN_DECIMALS.
     uint256 public constant TOKEN_DECIMALS = 1e6;
     uint256 public constant BPS_DENOMINATOR = 10_000;
 
+    /// @notice Avalanche C-Chain USDC. All secondary trades are settled in USDC.
     IERC20 public immutable usdc;
     IAsteraIdentityRegistry public immutable identityRegistry;
+    /// @notice Primary exchange, used as the authoritative source for supported tokens and fee
+    /// config.
     IAsteraPrimaryExchange public immutable exchange;
 
+    /// @notice Tracks how many tokens each seller has reserved across all their open orders.
+    /// @dev Prevents a seller from creating multiple orders that collectively exceed their
+    ///      available balance. Updated on createSellOrder (+), executeSellOrder (-), and
+    ///      cancelSellOrder (-).
     mapping(address token => mapping(address seller => uint256 amount)) public reservedForSale;
 
+    /// @notice Represents a live sell order on the secondary market.
     struct SellOrder {
         uint256 id;
         address seller;
         address token;
-        uint256 amountRemaining;
-        uint256 unitPriceUSDC;
+        uint256 amountRemaining; // in 6-decimal token units; decreases on partial fills
+        uint256 unitPriceUSDC; // price per 1 whole token (1e6 units), expressed in USDC 6-decimal
+        // units
     }
 
     SellOrder[] private _activeSellOrders;
@@ -103,6 +118,7 @@ contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
     error AmountExceedsOrder(uint256 requested, uint256 available);
     error InsufficientAvailableBalance(address seller, uint256 requested, uint256 available);
 
+    /// @notice Deploys the secondary exchange linked to an existing AsteraPrimaryExchange.
     constructor(address usdc_, address identityRegistry_, address exchange_, address admin_) {
         if (
             usdc_ == address(0) || identityRegistry_ == address(0) || exchange_ == address(0)
@@ -117,10 +133,15 @@ contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
         _grantRole(EXCHANGE_ADMIN_ROLE, admin_);
     }
 
-    /// @notice Creates a secondary-market sell order after funding is completed.
-    /// @param token AsteraToken address.
-    /// @param amount Amount of tokens to sell, in 6 decimals.
-    /// @param unitPriceUSDC Price per 1 whole token, in USDC 6 decimals.
+    /// @notice Places a sell order on the secondary market. Only allowed after funding is complete.
+    /// @dev Validates the seller's available balance (total balance minus partial freeze minus
+    ///      already-reserved tokens) to prevent over-committing. The seller retains custody of
+    ///      the tokens until a buyer fills the order; reservedForSale tracks the reserved amount
+    ///      to block double-listing the same balance.
+    /// @param token AsteraToken address being sold.
+    /// @param amount Token amount to sell, in 6-decimal units.
+    /// @param unitPriceUSDC Price per 1 whole token (1e6 token units) expressed in USDC 6-decimal
+    /// units.
     function createSellOrder(address token, uint256 amount, uint256 unitPriceUSDC) external {
         if (amount == 0 || unitPriceUSDC == 0) revert ZeroAmount();
         _requireSupported(token);
@@ -158,9 +179,17 @@ contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
         emit SellOrderCreated(id, seller, token, amount, unitPriceUSDC);
     }
 
-    /// @notice Executes a full or partial secondary-market order.
-    /// @dev Buyer pays gross price. Seller receives gross minus fee. Seller accounting is reduced
-    /// by gross price.
+    /// @notice Executes a full or partial fill of an existing sell order.
+    /// @dev Price formula: grossUSDC = amountToBuy * unitPriceUSDC / 1e6.
+    ///      grossUSDC == 0 is blocked to prevent free fills caused by integer truncation at small
+    /// amounts. Buyer pays grossUSDC; seller receives grossUSDC minus fee; fee goes to
+    /// feeRecipient.
+    ///      Annual investment accounting: buyer's yearlySpent increases by grossUSDC; seller's
+    ///      yearlySpent decreases by grossUSDC (gross, not net) because the decrease represents
+    ///      the capital economically divested, not the cash received after fee deduction.
+    ///      Tokens move via AsteraToken.exchangeTransfer (no ERC20 allowance required).
+    /// @param orderId ID of the target sell order.
+    /// @param amountToBuy Token amount to purchase, in 6-decimal units. Must be <= amountRemaining.
     function executeSellOrder(uint256 orderId, uint256 amountToBuy) external nonReentrant {
         if (amountToBuy == 0) revert ZeroAmount();
 
@@ -227,6 +256,7 @@ contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
         }
     }
 
+    /// @notice Cancels an open sell order and releases the reserved token amount.
     function cancelSellOrder(uint256 orderId) external {
         uint256 index = _orderIndex(orderId);
         SellOrder memory order = _activeSellOrders[index];
@@ -240,18 +270,27 @@ contract AsteraSecondaryExchange is AccessControl, ReentrancyGuard {
         _removeOrderAt(index);
     }
 
+    /// @notice Returns the number of currently active sell orders across all tokens.
     function activeSellOrderCount() external view returns (uint256) {
         return _activeSellOrders.length;
     }
 
+    /// @notice Returns the sell order at a given storage index. Use with activeSellOrderCount for
+    /// iteration.
     function activeSellOrderAt(uint256 index) external view returns (SellOrder memory) {
         return _activeSellOrders[index];
     }
 
+    /// @notice Returns a sell order by its ID.
     function getSellOrder(uint256 orderId) external view returns (SellOrder memory) {
         return _activeSellOrders[_orderIndex(orderId)];
     }
 
+    /// @notice Returns the gross USDC cost for a given token amount and unit price.
+    /// @dev grossUSDC = tokenAmount * unitPriceUSDC / 1e6. Exposed for frontend/backend quoting.
+    /// @param tokenAmount Amount of tokens in 6-decimal units.
+    /// @param unitPriceUSDC Price per 1 whole token in USDC 6-decimal units.
+    /// @return Gross USDC cost in 6-decimal units (before fee deduction).
     function quoteUSDC(uint256 tokenAmount, uint256 unitPriceUSDC) external pure returns (uint256) {
         return _quoteUSDC(tokenAmount, unitPriceUSDC);
     }
