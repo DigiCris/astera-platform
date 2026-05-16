@@ -37,31 +37,29 @@ export default function HowItWorksPage() {
         onSignUpClick={() => setSignUpModalOpen(true)}
       />
 
-      <main className="flex-1 bg-filabe-dark">
+     <main className="flex-1 bg-filabe-dark">
         <div className="container mx-auto px-4 py-12">
           <div className="mb-16 text-center">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-filabe-text">Cómo Funciona</h1>
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-filabe-text">¿Cómo Funciona?</h1>
             <p className="mx-auto max-w-3xl text-lg text-filabe-text/70">
-              En Filabe transformamos la ciudad para que puedas transformar tu vida, con un enfoque en la calidad, la
-              innovación y el compromiso con nuestros clientes.
+              Astera integra identidad, compliance y emisión regulada en una infraestructura modular on-chain diseñada para plataformas financieras y operadores del mercado.
             </p>
           </div>
 
-          {/* Proceso de Inversión */}
+          {/* Proceso de Operación Regulada */}
           <div className="mb-20">
-            <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Proceso de Inversión</h2>
+            <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Flujo de Emisión y Operación</h2>
             <div className="grid gap-8 md:grid-cols-4">
               <Card className="border-filabe-lightgray bg-filabe-gray">
                 <CardHeader>
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <UserCheck className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">1. Registro</CardTitle>
+                  <CardTitle className="text-filabe-text">1. Configuración del Activo</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Crea tu cuenta en nuestra plataforma para acceder a todas las oportunidades de inversión
-                    inmobiliaria que ofrecemos.
+                    El operador regulado (PSAV) crea el activo digital en la plataforma, definiendo las reglas de mercado, caps máximos, plazos y la estructura legal subyacente.
                   </p>
                 </CardContent>
               </Card>
@@ -71,12 +69,11 @@ export default function HowItWorksPage() {
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <FileCheck className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">2. Verificación KYC</CardTitle>
+                  <CardTitle className="text-filabe-text">2. Validación KYC</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Completa el proceso de verificación de identidad para garantizar la seguridad y transparencia en
-                    todas las transacciones.
+                    El usuario completa la verificación de identidad. Al aprobarse, su clave pública o wallet queda habilitada y vinculada inmutablemente dentro del protocolo core.
                   </p>
                 </CardContent>
               </Card>
@@ -86,12 +83,11 @@ export default function HowItWorksPage() {
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <CreditCard className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">3. Inversión</CardTitle>
+                  <CardTitle className="text-filabe-text">3. Adhesión e Inversión</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Selecciona el proyecto que más te interese y realiza tu inversión con montos accesibles, siguiendo
-                    nuestro proceso seguro.
+                    El inversor acepta de forma electrónica los términos legales. La operación primaria procesa la orden, enviando los fondos directamente al destino o fideicomiso definido.
                   </p>
                 </CardContent>
               </Card>
@@ -101,33 +97,31 @@ export default function HowItWorksPage() {
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <Coins className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">4. Seguimiento</CardTitle>
+                  <CardTitle className="text-filabe-text">4. Control Secundario</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Recibe actualizaciones periódicas sobre el avance de tu inversión y el desarrollo del proyecto hasta
-                    su finalización.
+                    Los tokens se administran bajo restricciones automatizadas. Cualquier transferencia secundaria se ejecuta obligatoriamente bajo las reglas de compliance on-chain de la red.
                   </p>
                 </CardContent>
               </Card>
             </div>
           </div>
 
-          {/* Proceso de Desarrollo */}
+        {/* Proceso de Desarrollo */}
           <div className="mb-20">
-            <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Proceso de Desarrollo</h2>
+            <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Arquitectura y Desarrollo</h2>
             <div className="grid gap-8 md:grid-cols-3">
               <Card className="border-filabe-lightgray bg-filabe-gray">
                 <CardHeader>
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <Lightbulb className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">Diseño y Planificación</CardTitle>
+                  <CardTitle className="text-filabe-text">Capa Regulatoria On-Chain</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Nuestro equipo de arquitectos y diseñadores trabaja en cada detalle para crear espacios funcionales
-                    y estéticos que maximizan la calidad de vida con un menor impacto ambiental.
+                    Diseñamos una infraestructura modular donde las reglas de cumplimiento normativo, el KYC y las restricciones de transferencia conviven directamente en el core de los smart contracts.
                   </p>
                 </CardContent>
               </Card>
@@ -137,12 +131,11 @@ export default function HowItWorksPage() {
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <Building className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">Construcción</CardTitle>
+                  <CardTitle className="text-filabe-text">Integración Modular (White-Label)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Utilizamos materiales de primera calidad y las técnicas más avanzadas para garantizar construcciones
-                    duraderas, sustentables y con los más altos estándares de calidad.
+                    Proveemos las APIs y herramientas necesarias para que terceros construyan su propio frontend y experiencia de usuario, manteniendo un flujo operativo robusto y adaptado a su marca.
                   </p>
                 </CardContent>
               </Card>
@@ -152,12 +145,11 @@ export default function HowItWorksPage() {
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-filabe-teal/20 text-filabe-teal">
                     <Home className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-filabe-text">Entrega y Posventa</CardTitle>
+                  <CardTitle className="text-filabe-text">Auditoría e Inmutabilidad</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-filabe-text/70">
-                    Nuestro compromiso no termina con la entrega. Ofrecemos un servicio posventa integral para asegurar
-                    que nuestros clientes disfruten plenamente de sus nuevos espacios.
+                    Garantizamos un registro transparente de todos los eventos del mercado secundario, límites operativos y procesos de verificación, ofreciendo un entorno seguro y completamente auditable.
                   </p>
                 </CardContent>
               </Card>
@@ -349,11 +341,11 @@ export default function HowItWorksPage() {
           <div className="flex items-center gap-2">
             <div className="text-filabe-text font-bold text-xl flex items-center gap-2">
               <Building2 className="h-6 w-6 text-primary" />
-              <span>FILABE</span>
+              <span>ASTERA</span>
             </div>
           </div>
           <p className="text-center text-sm text-filabe-text/70 md:text-left">
-            &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
             <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
