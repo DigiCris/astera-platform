@@ -93,6 +93,14 @@ These characteristics make Avalanche particularly suitable for compliant digital
 
 ---
 
+## Avalanche L1 Ready
+
+Astera is designed to support future deployment
+on Avalanche L1 environments for regulated institutions,
+PSAVs and enterprise tokenization platforms.
+
+---
+
 ## Repository Structure
 
 ```txt

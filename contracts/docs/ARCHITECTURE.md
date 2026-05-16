@@ -234,3 +234,14 @@ The only authorized movement paths are:
 - `exchangeTransfer` (authorized exchanges in `authorizedExchanges`)
 - `forcedTransfer` (admin via `FORCED_TRANSFER_ROLE`, exceptional path)
 - `burn` (via `BURNER_ROLE`, operational/admin tool)
+
+---
+
+## Potential Avalanche L1 Use Cases
+
+- Institution-specific environments
+- Permissioned validators
+- Compliance-first settlement
+- Custom fee models
+- Regulated secondary markets
+- Asset isolation per issuer
