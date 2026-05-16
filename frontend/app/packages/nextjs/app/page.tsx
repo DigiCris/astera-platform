@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, DollarSign, LineChart, Shield, Users } from "lucide-react";
+import { ArrowRight, ChevronRight, DollarSign, ShieldCheck, Shield, Users, Cpu } from "lucide-react";
 import { LoginModal } from "~~/components/auth/login-modal";
 import { SignUpModal } from "~~/components/auth/signup-modal";
 import { MainNav } from "~~/components/main-nav";
@@ -88,24 +88,23 @@ export default function HomePage() {
           className="relative w-full py-24 md:py-32 lg:py-40 bg-cover bg-center"
           style={{ backgroundImage: 'url("/images/filabe_hero.png")' }}
         >
-          <div className="absolute inset-0 bg-black/50"></div>
+<div className="absolute inset-0 bg-black/50"></div>
           <div className="container relative px-4 md:px-6 z-10 flex justify-center items-center">
             <div className="max-w-2xl text-center">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none mb-6">
-                Expertos en Diseño y Desarrollo Urbano
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none mb-6 text-filabe-text">
+                Infraestructura para Activos Digitales Regulados
               </h1>
               <p className="max-w-[600px] mx-auto text-filabe-text/90 md:text-xl mb-8">
-                Construimos hogares y comunidades con una visión de futuro que inspira la innovación. Nuestro compromiso
-                es construir calidad de vida para nuestros clientes.
+                Astera permite emitir y operar activos de mercados financieros modernos mediante infraestructura blockchain con compliance, identidad verificada y reglas de mercado integradas desde el diseño.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row justify-center">
-                <Link href="/projects">
-                  <Button size="lg" className="gap-1.5 bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
-                    Explorar Proyectos <ChevronRight className="h-4 w-4" />
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                  <Button size="lg" className="gap-1.5 bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90 w-full">
+                    Ver GitHub <ChevronRight className="h-4 w-4" />
                   </Button>
-                </Link>
-                <Link href="/how-it-works">
-                  <Button size="lg" variant="outline" className="border-filabe-teal text-filabe-teal">
+                </a>
+                <Link href="/how-it-works" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="border-filabe-teal text-filabe-teal w-full">
                     Cómo Funciona
                   </Button>
                 </Link>
@@ -115,22 +114,21 @@ export default function HomePage() {
         </section>
 
         {/* Logros */}
-        <section className="bg-filabe-dark py-16">
+          <section className="bg-filabe-dark py-16">
           <div className="container px-4 md:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold mb-4 text-filabe-text">Nuestros Logros</h2>
+                <h2 className="text-3xl font-bold mb-4 text-filabe-text">Nuestra Infraestructura</h2>
                 <div className="h-1 w-20 bg-filabe-teal mb-6"></div>
                 <p className="text-filabe-text/80 text-lg">
-                  En Filabe, nos enorgullecemos de nuestro impacto en el desarrollo urbano y la creación de espacios que
-                  mejoran la calidad de vida.
+                  En Astera, nos enfocamos en el impacto de la tecnología ledger distribuida para optimizar la liquidez global y automatizar el cumplimiento en mercados financieros permissioned.
                 </p>
               </div>
               <div className="flex items-center justify-center">
                 <div className="text-center">
-                  <span className="text-5xl font-bold text-filabe-teal block">+40</span>
-                  <span className="text-2xl font-medium text-filabe-text">mil m²</span>
-                  <p className="text-filabe-text/70 mt-2">construidos</p>
+                  <span className="text-5xl font-bold text-filabe-teal block">100%</span>
+                  <span className="text-2xl font-medium text-filabe-text">On-Chain</span>
+                  <p className="text-filabe-text/70 mt-2">compliance & trazabilidad</p>
                 </div>
               </div>
             </div>
@@ -265,30 +263,26 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
         {/* Filosofía y Valores */}
         <section className="bg-filabe-dark">
           <div className="filabe-container">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div className="flex flex-col justify-center space-y-6">
                 <div>
-                  <h2 className="section-heading">Nuestra Filosofía</h2>
+                  <h2 className="section-heading">Nuestra Visión</h2>
                   <p className="max-w-[600px] text-filabe-text/80 md:text-lg mt-6">
-                    En Filabe, aspiramos a ser líderes en América Latina en desarrollos inmobiliarios que generen
-                    bienestar y satisfacción, construyendo comunidades sostenibles que maximizan la calidad de vida con
-                    un menor impacto ambiental.
+                    En Astera, transformamos los mercados financieros mediante una capa regulatoria on-chain eficiente. Proporcionamos a fintechs, PSAVs e instituciones la infraestructura tecnológica necesaria para operar activos digitales con total seguridad jurídica y control operativo absoluto.
                   </p>
                 </div>
                 <ul className="grid gap-6">
                   <li className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0">
-                      <DollarSign className="h-5 w-5 text-filabe-teal" />
+                      <ShieldCheck className="h-5 w-5 text-filabe-teal" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Confianza</h3>
+                      <h3 className="font-bold text-filabe-text">Compliance-Native</h3>
                       <p className="text-filabe-text/70">
-                        Construimos relaciones sólidas basadas en la honestidad y el cumplimiento de nuestros
-                        compromisos.
+                        Reglas de mercado, límites operativos, procesos de freeze y validaciones integradas directamente en el diseño del protocolo.
                       </p>
                     </div>
                   </li>
@@ -297,21 +291,20 @@ export default function HomePage() {
                       <Shield className="h-5 w-5 text-filabe-teal" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Transparencia</h3>
+                      <h3 className="font-bold text-filabe-text">Identidad y Control</h3>
                       <p className="text-filabe-text/70">
-                        Comunicamos de manera clara y abierta todos los aspectos de nuestros proyectos y procesos.
+                        Vinculación inmutable de identidades verificadas (KYC) a nivel de smart contract, mitigando riesgos operativos y regulatorios.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0">
-                      <LineChart className="h-5 w-5 text-filabe-teal" />
+                      <Cpu className="h-5 w-5 text-filabe-teal" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Innovación</h3>
+                      <h3 className="font-bold text-filabe-text">Arquitectura Abierta</h3>
                       <p className="text-filabe-text/70">
-                        Buscamos constantemente nuevas soluciones y tecnologías para mejorar nuestros desarrollos y
-                        procesos.
+                        Infraestructura modular sin custodia forzada que permite a terceros construir experiencias financieras a medida (White-label).
                       </p>
                     </div>
                   </li>
@@ -321,7 +314,7 @@ export default function HomePage() {
                 <div className="aspect-square overflow-hidden rounded-md">
                   <Image
                     src="/placeholder.svg?height=800&width=800"
-                    alt="Desarrollo inmobiliario Filabe"
+                    alt="Infraestructura Blockchain Astera"
                     width={800}
                     height={800}
                     className="object-cover w-full h-full"
@@ -332,7 +325,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Testimonios */}
+        {/* Testimonios 
         <section className="bg-filabe-gray py-16">
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
@@ -373,6 +366,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+      */}
 
         {/* CTA */}
         <section className="bg-filabe-teal text-filabe-dark">
@@ -409,15 +403,14 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* Footer */}
+    {/* Footer */}
       <footer className="bg-filabe-dark border-t border-filabe-lightgray py-12">
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div>
-              <div className="text-filabe-text font-bold text-xl">FILABE</div>
+              <div className="text-filabe-text font-bold text-xl">ASTERA</div>
               <p className="mt-4 text-sm text-filabe-text/70 max-w-xs">
-                Transformamos la ciudad para que puedas transformar tu vida. Inversión inmobiliaria accesible para
-                todos.
+                Astera permite emitir y operar activos digitales regulados mediante infraestructura blockchain con compliance e identidad verificada.
               </p>
               <div className="flex gap-4 mt-6">
                 <a href="#" className="text-filabe-text/70 hover:text-filabe-teal">
@@ -471,99 +464,52 @@ export default function HomePage() {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Oficinas</h3>
+              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Infraestructura</h3>
               <ul className="space-y-4">
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Berazategui</p>
-                  <p>Av. Mitre 799, B1880 Berazategui</p>
-                  <p>Provincia de Buenos Aires</p>
-                  <p>Tel: (+54) 11 5612-9008</p>
+                  <p className="font-medium text-filabe-text">Identidad Integrada</p>
+                  <p>Unificación de la lógica de mercado con validación KYC directamente en el core del protocolo.</p>
                 </li>
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Puerto Madero</p>
-                  <p>Lola Mora 421 Of. 401, CABA</p>
+                  <p className="font-medium text-filabe-text">Restricciones Automatizadas</p>
+                  <p>Reglas de cumplimiento normativo y límites operativos integrados nativamente desde el diseño.</p>
                 </li>
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Villarobles</p>
-                  <p>Ruta 11 KM. 374, Villarobles</p>
-                  <p>Tel: (+54) 11 5613-3057</p>
+                  <p className="font-medium text-filabe-text">Mercado Secundario</p>
+                  <p>Trazabilidad completa y control de operaciones sin necesidad de estructuras de custodia centralizadas.</p>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Contacto</h3>
+              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Documentación</h3>
               <ul className="space-y-2 text-filabe-text/70">
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                  </svg>
-                  <span>(+54) 11 5612-9008</span>
+                <li>
+                  <Link href="/terminos-y-condiciones" className="hover:text-filabe-teal transition-colors">
+                    Términos y Condiciones
+                  </Link>
                 </li>
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                  </svg>
-                  <span>hola@filabe.com.ar</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                  </svg>
-                  <span>@filabe.ar</span>
+                <li>
+                  <Link href="/privacidad" className="hover:text-filabe-teal transition-colors">
+                    Política de Privacidad
+                  </Link>
                 </li>
               </ul>
 
-              <h3 className="text-lg font-semibold mb-4 mt-6 text-filabe-text">Preguntas Frecuentes</h3>
+              <h3 className="text-lg font-semibold mb-4 mt-6 text-filabe-text">Arquitectura</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/about#faq-financiamiento" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Ofrecen opciones de financiamiento?
+                  <Link href="/about#smart-contracts" className="text-filabe-text/70 hover:text-filabe-teal">
+                    ¿Cómo funcionan las reglas de mercado?
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#faq-permutas" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Aceptan permutas como parte de pago?
+                  <Link href="/about#compliance" className="text-filabe-text/70 hover:text-filabe-teal">
+                    Garantía de compliance regulatorio
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#faq-posventa" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Qué tipo de servicio posventa ofrecen?
+                  <Link href="/about#non-custodial" className="text-filabe-text/70 hover:text-filabe-teal">
+                    Modelos operativos no custodios
                   </Link>
                 </li>
               </ul>
@@ -571,13 +517,12 @@ export default function HomePage() {
           </div>
           <div className="border-t border-filabe-lightgray mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-filabe-text/70">
-              &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
             </p>
-            <p className="text-sm text-filabe-text/70 mt-2 md:mt-0">San Martín Calle 52 654 88, Quilmes, B1878FQN</p>
+            <p className="text-sm text-filabe-text/70 mt-2 md:mt-0">Ecosistema Blockchain y Activos Digitales Regulados</p>
           </div>
         </div>
       </footer>
-
       {/* Auth Modals */}
       <LoginModal open={showLoginModal} onOpenChange={setShowLoginModal} />
       <SignUpModal open={showSignUpModal} onOpenChange={setShowSignUpModal} />
