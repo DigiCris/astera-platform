@@ -19,7 +19,8 @@ This is the primary entrypoint for auditing the Astera Finance smart contract sy
 11. [Testing](#testing)
 12. [Deployment](#deployment)
 13. [Commands](#commands)
-14. [Documentation Index](#documentation-index)
+14. [Admin Operations](#admin-operations)
+15. [Documentation Index](#documentation-index)
 
 ---
 
@@ -339,6 +340,15 @@ forge build
 forge test
 forge test -vvv
 ```
+
+---
+
+## Admin Operations
+
+| Resource | Description |
+|----------|-------------|
+| [`docs/admin/CREATE_PROJECT_TOKEN_CLI.md`](docs/admin/CREATE_PROJECT_TOKEN_CLI.md) | CLI to deploy a new project token — prompts for parameters, broadcasts via Foundry, saves a deployment record, and pushes to GitHub |
+| [`docs/tokenDeployments/README.md`](docs/tokenDeployments/README.md) | Versioned registry of all token deployments — naming convention, JSON fields, audit trail purpose |
 
 ---
 
