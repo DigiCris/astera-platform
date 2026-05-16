@@ -446,8 +446,8 @@ export default function AdminPage() {
           </div>
 
           {/* Dashboard Summary */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+            {/* <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
@@ -456,9 +456,9 @@ export default function AdminPage() {
                 <div className="text-2xl font-bold">1,248</div>
                 <p className="text-xs text-muted-foreground">+24 this week</p>
               </CardContent>
-            </Card>
+            </Card> */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex flex-1 items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -467,7 +467,7 @@ export default function AdminPage() {
                 <p className="text-xs text-muted-foreground">3 pending approval</p>
               </CardContent>
             </Card>
-            <Card>
+            {/* <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Investments</CardTitle>
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -476,15 +476,15 @@ export default function AdminPage() {
                 <div className="text-2xl font-bold">$4.2M</div>
                 <p className="text-xs text-muted-foreground">+$320K this month</p>
               </CardContent>
-            </Card>
+            </Card> */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex flex-1 items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pending KYC</CardTitle>
                 <Shield className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">18</div>
-                <p className="text-xs text-muted-foreground">5 new today</p>
+                <div className="text-2xl font-bold">{submissions.length}</div>
+                {/* <p className="text-xs text-muted-foreground">5 new today</p> */}
               </CardContent>
             </Card>
           </div>
