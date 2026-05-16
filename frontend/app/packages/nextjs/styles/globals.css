@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+
+/* --- Paleta Filabe Original --- */
+  --color-filabe-teal: #5ECCC7;
+  --color-filabe-dark: #121212;
+  --color-filabe-gray: #1E1E1E;
+  --color-filabe-lightgray: #2A2A2A;
+  --color-filabe-text: #F5F5F5;
+
+  --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
+  --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+
+  
+  /* Mapeo de variables para Tailwind v4 */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  /* --- Background Images --- */
+  --image-hero-pattern: url('/images/hero-bg.jpg');
+
+  /* Color Teal específico de tu proyecto Filabe */
+  --color-filabe-teal: hsl(177 65% 58%);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --breakpoint-2xl: 1400px;
+}
+
+@layer base {
+  :root {
+    /* Paleta Dark de Filabe (v0) como default */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 177 65% 58%; /* Teal */
+    --primary-foreground: 0 0% 7%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 96%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 177 65% 58%;
+    --radius: 0.5rem;
+
+    /* Variables de Sidebar necesarias para Scaffold */
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 177 65% 58%;
+    --sidebar-border: 0 0% 20%;
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: hsl(var(--border) / 1); /* Fix para evitar error de compilación */
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    min-height: 100vh;
+  }
+}
+
+/* Clases específicas de Filabe (v0) */
+@layer components {
+
+  .container {
+    margin-inline: auto;    
+    padding-inline: 2rem;
+    width: 100%;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
+  }
+
+  .section-heading {
+    @apply text-3xl font-bold tracking-tighter md:text-4xl mb-6 relative;
+  }
+
+  .section-heading::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: hsl(177 65% 58%); /* Teal Filabe */
+  }
+
+  
+
+  .filabe-container {
+    @apply container px-4 md:px-6 py-12 md:py-24 mx-auto;
+  }
+}
+
+/* Compatibilidad con componentes de Scaffold-ETH */
+.btn {
+  @apply shadow-md;
+}
+.btn-primary {
+  @apply bg-primary text-primary-foreground;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
