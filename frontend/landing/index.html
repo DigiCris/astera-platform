@@ -3,8 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Astera Finance | Infraestructura de tokenización regulada</title>
-  <meta name="description" content="Astera Finance permite emitir y operar activos digitales regulados mediante infraestructura blockchain con compliance, identidad verificada y reglas de mercado integradas desde el diseño." />
+  <title>Astera Finance | Infraestructura de Tokenización Regulada</title>
+  <meta name="description" content="Astera Finance es infraestructura B2B para mercados tokenizados regulados sobre Avalanche, combinando KYC, compliance, emisión de activos, liquidación con USDC, mercados secundarios permissioned, auditoría on-chain y risk intelligence con Wavy Node." />
+  <meta name="keywords" content="Astera Finance, tokenización regulada, Avalanche, RWA, activos del mundo real, infraestructura financiera, finanzas institucionales, activos tokenizados, compliance, KYC, liquidación con USDC, mercados secundarios, Wavy Node, fintech LATAM, PSAV, mercados de capitales on-chain, fideicomisos tokenizados, tokenización de activos" />
+  <meta name="author" content="Astera Finance" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astera Finance" />
+  <meta property="og:title" content="Astera Finance | Infraestructura de Tokenización Regulada" />
+  <meta property="og:description" content="Infraestructura B2B para que PSAVs, fintechs e instituciones financieras lancen mercados tokenizados compliant sobre Avalanche." />
+  <meta property="og:image" content="./assets/banner.png" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Astera Finance | Infraestructura de Tokenización Regulada" />
+  <meta name="twitter:description" content="Lanzá mercados tokenizados compliant con KYC, compliance, liquidación con USDC, mercado secundario permissioned y auditoría on-chain." />
+  <meta name="twitter:image" content="./assets/banner.png" />
 
   <link rel="icon" href="assets/astera_favicon.ico" />
   <link rel="apple-touch-icon" href="assets/astera_favicon_256.png" />
@@ -655,6 +670,58 @@
       transform: translateY(0);
     }
 
+    /* ── Powered-by strip ── */
+    .powered-strip {
+      border-top: 1px solid var(--line-2);
+      border-bottom: 1px solid var(--line-2);
+      background: rgba(255,255,255,.022);
+      padding: 16px 0;
+    }
+
+    .powered-inner {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .powered-label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: .7;
+    }
+
+    .powered-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--line-2);
+      flex-shrink: 0;
+    }
+
+    .powered-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.038);
+      color: #c9daee;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .powered-badge .pb-icon {
+      font-size: 13px;
+      line-height: 1;
+    }
+    /* ── end Powered-by strip ── */
+
     @media (max-width: 1040px) {
       .hero-grid,
       .split,
@@ -796,7 +863,7 @@
         <a href="#arquitectura">Arquitectura</a>
         <a href="#flujo">Flujo</a>
         <a href="#avalanche">Avalanche</a>
-        <a class="nav-cta" href="/app">Ver Demo</a>
+        <a class="nav-cta" href="https://astera-frontend.vercel.app/" target="_blank" rel="noopener noreferrer">Ver Demo</a>
       </nav>
     </div>
   </header>
@@ -813,8 +880,8 @@
           </p>
 
           <div class="hero-actions">
-            <a class="button button-primary" href="/app">Ver Demo →</a>
-            <a class="button button-secondary" href="https://github.com/DigiCris/astera-platform" target="_blank" rel="noreferrer">Ver GitHub</a>
+            <a class="button button-primary" href="https://astera-frontend.vercel.app/" target="_blank" rel="noopener noreferrer">Ver Demo →</a>
+            <a class="button button-secondary" href="https://github.com/DigiCris/astera-platform" target="_blank" rel="noopener noreferrer">Ver GitHub</a>
           </div>
 
           <div class="trust-row">
@@ -835,6 +902,23 @@
         </div>
       </div>
     </section>
+
+    <div class="powered-strip">
+      <div class="container">
+        <div class="powered-inner">
+          <span class="powered-label">Construido con</span>
+          <div class="powered-sep"></div>
+          <span class="powered-badge">
+            <span class="pb-icon">🔺</span>
+            Built on Avalanche · L1-ready architecture
+          </span>
+          <span class="powered-badge">
+            <span class="pb-icon">🔍</span>
+            Risk intelligence powered by Wavy Node
+          </span>
+        </div>
+      </div>
+    </div>
 
     <section id="problema">
       <div class="container split">
@@ -1003,7 +1087,7 @@
               <strong>Agendá una reunión</strong> y te mostramos cómo adaptar Astera a tu marca, frontend y flujo operativo.
             </p>
 
-            <a href="https://calendar.app.google/WCBkLc5mqcvxqtHb6" target="_blank" rel="noopener" class="b2b-cta-btn">
+            <a href="https://api.leadconnectorhq.com/widget/bookings/astera-tokenizacion" target="_blank" rel="noopener noreferrer" class="b2b-cta-btn">
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -1061,8 +1145,8 @@
             Explora la demo y mira cómo puede funcionar un mercado tokenizado compliant end-to-end.
           </p>
           <div class="hero-actions" style="justify-content:center;">
-            <a class="button button-primary" href="/app">Ver Demo →</a>
-            <a class="button button-secondary" href="https://github.com/DigiCris/astera-platform" target="_blank" rel="noreferrer">Ver GitHub</a>
+            <a class="button button-primary" href="https://astera-frontend.vercel.app/" target="_blank" rel="noopener noreferrer">Ver Demo →</a>
+            <a class="button button-secondary" href="https://github.com/DigiCris/astera-platform" target="_blank" rel="noopener noreferrer">Ver GitHub</a>
           </div>
         </div>
       </div>
@@ -1074,7 +1158,7 @@
       <div>© 2026 Astera Finance. Infraestructura de tokenización regulada.</div>
       <div class="footer-links">
         <a href="https://github.com/DigiCris/astera-platform" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="/app">Demo</a>
+        <a href="https://astera-frontend.vercel.app/" target="_blank" rel="noopener noreferrer">Demo</a>
         <a href="#arquitectura">Arquitectura</a>
       </div>
     </div>
