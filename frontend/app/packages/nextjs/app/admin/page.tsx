@@ -510,7 +510,7 @@ export default function AdminPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-[100px]">Wallet</TableHead>
+                          <TableHead>Wallet</TableHead>
                           <TableHead>Name</TableHead>
                           <TableHead>Email</TableHead>
                           <TableHead>Submitted</TableHead>

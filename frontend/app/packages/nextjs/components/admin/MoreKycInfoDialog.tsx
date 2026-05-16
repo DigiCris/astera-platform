@@ -23,23 +23,60 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
   const supabase = createClient();
   const [loadingPath, setLoadingPath] = useState<string | null>(null);
 
-  // 🔥 FUNCIÓN PARA SOLICITAR LA URL FIRMADA Y ABRIRLA
+  // const handleViewDocument = async (path: string) => {
+  //   if (!path) return;
+
+  //   try {
+  //     setLoadingPath(path);
+
+  //     const { data, error } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(path, 120); // La URL expirará y dejará de funcionar en 2 minutos (120 seg)
+
+  //     if (error) {
+  //       console.error("Error al generar URL firmada:", error.message);
+  //       alert("No se pudo obtener el documento de forma segura.");
+  //       return;
+  //     }
+
+  //     if (data?.signedUrl) {
+  //       window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  //     }
+  //   } catch (err) {
+  //     console.error("Exception opening document:", err);
+  //   } finally {
+  //     setLoadingPath(null);
+  //   }
+  // };
+
   const handleViewDocument = async (path: string) => {
     if (!path) return;
 
     try {
       setLoadingPath(path);
 
-      const { data, error } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(path, 120); // La URL expirará y dejará de funcionar en 2 minutos (120 seg)
+      // 👇 Extrae la wallet del path: "0xe27c.../id_back.jpeg" → "0xe27c..."
+      const walletFromPath = path.split("/")[0];
 
-      if (error) {
-        console.error("Error al generar URL firmada:", error.message);
-        alert("No se pudo obtener el documento de forma segura.");
-        return;
-      }
+      const originalFetch = window.fetch;
+      window.fetch = async (input, init) => {
+        const headers = new Headers(init?.headers);
+        headers.set("x-wallet-address", walletFromPath);
+        return originalFetch(input, { ...init, headers });
+      };
 
-      if (data?.signedUrl) {
-        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+      try {
+        const { data, error } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(path, 120);
+
+        if (error) {
+          console.error("Error al generar URL firmada:", error.message);
+          alert("No se pudo obtener el documento.");
+          return;
+        }
+
+        if (data?.signedUrl) {
+          window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+        }
+      } finally {
+        window.fetch = originalFetch; // 👈 Siempre restaurar
       }
     } catch (err) {
       console.error("Exception opening document:", err);
@@ -169,7 +206,7 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
               {/* Documento Frente */}
               <div className="flex items-center justify-between p-2.5 bg-base-200 rounded-lg text-sm">
                 <span className="font-medium">Identificación - Frente</span>
-                <span className="text-xs font-mono opacity-50 truncate max-w-[200px] sm:max-w-xs px-2">
+                <span className="text-xs font-mono opacity-50 truncate max-w-50 sm:max-w-xs px-2">
                   {submission.front_doc_path.split("/").pop()}
                 </span>
                 <Button
@@ -193,7 +230,7 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
               {submission.back_doc_path && (
                 <div className="flex items-center justify-between p-2.5 bg-base-200 rounded-lg text-sm">
                   <span className="font-medium">Identificación - Reverso</span>
-                  <span className="text-xs font-mono opacity-50 truncate max-w-[200px] sm:max-w-xs px-2">
+                  <span className="text-xs font-mono opacity-50 truncate max-w-50 sm:max-w-xs px-2">
                     {submission.back_doc_path.split("/").pop()}
                   </span>
                   <Button
@@ -217,7 +254,7 @@ export const MoreKycInfoDialog = ({ submission }: MoreKycInfoDialogProps) => {
               {/* Comprobante de domicilio */}
               <div className="flex items-center justify-between p-2.5 bg-base-200 rounded-lg text-sm">
                 <span className="font-medium">Comprobante de Domicilio</span>
-                <span className="text-xs font-mono opacity-50 truncate max-w-[200px] sm:max-w-xs px-2">
+                <span className="text-xs font-mono opacity-50 truncate max-w-50 sm:max-w-xs px-2">
                   {submission.proof_address_path.split("/").pop()}
                 </span>
                 <Button

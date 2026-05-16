@@ -121,8 +121,6 @@ export default function KYCPage() {
     const filePath = `${path}.${ext}`;
     const walletLower = address?.toLowerCase() || "";
 
-    // Modificamos temporalmente el fetch global para inyectar el header en el Storage
-
     const originalFetch = window.fetch;
     window.fetch = async (input, init) => {
       const headers = new Headers(init?.headers);
