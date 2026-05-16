@@ -1,0 +1,18 @@
+{
+  "tokenName": "Astera Real Estate I",
+  "tokenSymbol": "AREI",
+  "tokenAddress": "0x640C0638703D18B0d5B878606224FC3a592E92D6",
+  "complianceManagerAddress": "0xFA129CC39d49942b1D0C4fb5587DB605B98E1Dd9",
+  "exchange": "0x89B2b2FE6fC68a865A258c2C99adaCF5aF4c5A35",
+  "maxSupply": "100000000000",
+  "softCap": "25000000000",
+  "fundingDeadline": 1784097725,
+  "fideicomisoWallet": "0xd22077414e8859BA08723fEC0ac54D0365346D1e",
+  "genericDocumentHash": "0x6997b5bd3d2c1b7e3812ca8741ad8183292eb39507b7433e622e2474c0fff23a",
+  "genericDocumentURI": "https://ivory-accessible-owl-927.mypinata.cloud/ipfs/bafkreiaycpbk6u5a2j6o7j3pwmn7qakvmgix2kt2queuiw733gqvn27kl4",
+  "deployedAt": "2026-05-16T21:25:01.993Z",
+  "txHash": "0x8b72cccb31d29c133f5153a1f6398937cd920d6db5c31ec586915afdce5155fa",
+  "chainId": 43114,
+  "deployer": "0xd22077414e8859ba08723fec0ac54d0365346d1e",
+  "broadcastPath": "broadcast/DeployToken.s.sol/43114/run-latest.json"
+}
