@@ -134,7 +134,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               Nosotros
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-filabe-text">
-              Mi Inversión
+              Mi Balance
             </Link>
           </nav>
           <div className="flex items-center gap-4">
