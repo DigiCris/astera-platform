@@ -414,8 +414,8 @@ export default function AboutPage() {
           <Separator className="mb-8 bg-filabe-lightgray" />
 
           <div className="text-center text-sm text-filabe-text/70">
-            <p>Copyright © 2025 SUAREZ FILABE SA</p>
-            <p>San Martín Calle 52 654 88, Quilmes, B1878FQN</p>
+            <p>Copyright © {new Date().getFullYear()} ASTERA</p>
+            <p>Ecosistema Blockchain y Activos Digitales Regulados</p>
           </div>
         </div>
       </main>
@@ -426,11 +426,11 @@ export default function AboutPage() {
           <div className="flex items-center gap-2">
             <div className="text-filabe-text font-bold text-xl flex items-center gap-2">
               <Building2 className="h-6 w-6 text-primary" />
-              <span>FILABE</span>
+              <span>ASTERA</span>
             </div>
           </div>
           <p className="text-center text-sm text-filabe-text/70 md:text-left">
-            &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
             <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
