@@ -114,7 +114,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header - Actualizado para coincidir con el dashboard */}
-      <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-[backdrop-filter]:bg-filabe-dark/60">
+      <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-backdrop-filter:bg-filabe-dark/60">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
             <Building2 className="h-6 w-6 text-filabe-teal" />
