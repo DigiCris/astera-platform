@@ -107,7 +107,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[550px] bg-filabe-gray border-filabe-lightgray">
+      <DialogContent className="sm:max-w-137.5 bg-filabe-gray border-filabe-lightgray">
         <DialogHeader>
           <DialogTitle className="text-filabe-text">Invertir en {project.title}</DialogTitle>
           <DialogDescription className="text-filabe-text/70">

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { Building2, Check, CreditCard, Loader2, Shield, Users, X } from "lucide-react";
+import { Building2, Check, Loader2, Shield, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAccount } from "wagmi";
 import { HeaderAdmin } from "~~/components/admin/HeaderAdmin";
@@ -150,7 +150,9 @@ export default function AdminPage() {
   const { address } = useAccount();
   const supabase = createClient();
 
-  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({ contractName: "IdentityRegistry" });
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract({
+    contractName: "AsteraIdentityRegistry",
+  });
 
   const [submissions, setSubmissions] = useState<IKycPending[]>([]);
   const [loading, setLoading] = useState(true);
