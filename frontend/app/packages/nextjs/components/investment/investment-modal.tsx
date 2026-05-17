@@ -17,9 +17,30 @@ import {
 } from "../ui/shadcn/dialog";
 import { Input } from "../ui/shadcn/input";
 import { Label } from "../ui/shadcn/label";
-import { Separator } from "../ui/shadcn/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/shadcn/tabs";
-import { ArrowLeft, ArrowRight, Check, DollarSign, Upload, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, DollarSign, Download, FileText, Loader2, Upload, Wallet } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { keccak256 } from "viem";
+import { useAccount, useSignTypedData } from "wagmi";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { createClient } from "~~/utils/supabase/client";
+
+// ── Constantes del contrato ─────────────────────────────────────────────
+const GENERIC_DOCUMENT_HASH = "0x6997b5bd3d2c1b7e3812ca8741ad8183292eb39507b7433e622e2474c0fff23a" as `0x${string}`;
+const GENERIC_DOCUMENT_URI =
+  "https://ivory-accessible-owl-927.mypinata.cloud/ipfs/bafkreiaycpbk6u5a2j6o7j3pwmn7qakvmgix2kt2queuiw733gqvn27kl4";
+const COMPLIANCE_ADDRESS = "0xFA129CC39d49942b1D0C4fb5587DB605B98E1Dd9" as `0x${string}`;
+const CHAIN_ID = 43114;
+
+// ── EIP-712 types ───────────────────────────────────────────────────────
+const EIP712_TYPES = {
+  AgreementAcceptance: [
+    { name: "genericDocumentHash", type: "bytes32" },
+    { name: "genericDocumentURI", type: "string" },
+    { name: "signedDocumentHash", type: "bytes32" },
+    { name: "user", type: "address" },
+  ],
+} as const;
 
 interface InvestmentModalProps {
   trigger?: React.ReactNode;
@@ -34,53 +55,126 @@ interface InvestmentModalProps {
 }
 
 export function InvestmentModal({ trigger, open, onOpenChange, project }: InvestmentModalProps) {
+  const { address } = useAccount();
+  const supabase = createClient();
+
+  // ── States ──────────────────────────────────────────────────────────
   const [step, setStep] = useState(1);
   const [investmentAmount, setInvestmentAmount] = useState(project.minimumInvestment.toString());
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"bank" | "crypto">("bank");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
+  const [isSigning, setIsSigning] = useState(false);
 
-  const totalSteps = 4;
+  // ── Hooks ────────────────────────────────────────────────────────────
+  const { signTypedDataAsync } = useSignTypedData();
 
+  const { data: isCompliant } = useScaffoldReadContract({
+    contractName: "AsteraComplianceManager",
+    functionName: "isCompliant",
+    args: [address],
+  });
+
+  const { writeContractAsync: writeComplianceManager } = useScaffoldWriteContract({
+    contractName: "AsteraComplianceManager",
+  });
+
+  const totalSteps = isCompliant ? 3 : 4;
+
+  // ── Handlers ─────────────────────────────────────────────────────────
   const handleNext = () => {
-    if (step < totalSteps) {
-      setStep(step + 1);
-    }
+    if (step < totalSteps) setStep(step + 1);
   };
-
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
+    if (step > 1) setStep(step - 1);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file || !address) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Solo se aceptan archivos PDF");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("El archivo debe ser menor a 5MB");
+      return;
+    }
+
+    setIsSigning(true);
+    try {
+      // 1. Hash keccak256 del PDF firmado
+      const buffer = await file.arrayBuffer();
+      const signedDocHash = keccak256(new Uint8Array(buffer)) as `0x${string}`;
+
+      // 2. Firma EIP-712
+      toast.loading("Firmando con tu wallet...", { id: "sign" });
+      const signature = await signTypedDataAsync({
+        domain: {
+          name: "AsteraCompliance",
+          version: "1",
+          chainId: CHAIN_ID,
+          verifyingContract: COMPLIANCE_ADDRESS,
+        },
+        types: EIP712_TYPES,
+        primaryType: "AgreementAcceptance",
+        message: {
+          genericDocumentHash: GENERIC_DOCUMENT_HASH,
+          genericDocumentURI: GENERIC_DOCUMENT_URI,
+          signedDocumentHash: signedDocHash,
+          user: address,
+        },
+      });
+      toast.success("Firma EIP-712 obtenida ✓", { id: "sign" });
+
+      // 3. Subir PDF a Supabase Storage
+      const walletLower = address.toLowerCase();
+      const filePath = `${walletLower}/signed_agreement.pdf`;
+
+      const originalFetch = window.fetch;
+      window.fetch = async (input, init) => {
+        const headers = new Headers(init?.headers);
+        headers.set("x-wallet-address", walletLower);
+        return originalFetch(input, { ...init, headers });
+      };
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from("kyc-documents")
+          .upload(filePath, file, { upsert: true });
+        if (uploadError) throw new Error(`Upload falló: ${uploadError.message}`);
+      } finally {
+        window.fetch = originalFetch;
+      }
+      toast.success("PDF subido ✓");
+
+      // 4. Llamar al smart contract
+      toast.loading("Enviando transacción...", { id: "tx" });
+      await writeComplianceManager({
+        functionName: "acceptTermsAndJoin",
+        args: [signedDocHash, signature],
+      });
+      toast.success("¡Adhesión confirmada on-chain! ✓", { id: "tx" });
+
+      // 5. Actualizar UI local
       setProofFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProofPreview(reader.result as string);
-      };
+      reader.onloadend = () => setProofPreview(reader.result as string);
       reader.readAsDataURL(file);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Error: ${err.message}`, { id: "sign" });
+      // Limpiar input para permitir re-intentar
+      e.target.value = "";
+    } finally {
+      setIsSigning(false);
     }
   };
 
   const handleSubmit = () => {
-    // Handle investment submission
-    console.log({
-      projectId: project.id,
-      investmentAmount: Number.parseFloat(investmentAmount),
-      acceptedTerms,
-      paymentMethod,
-      proofFile,
-    });
-    // Close modal or show success
-    if (onOpenChange) {
-      onOpenChange(false);
-    }
-    // Redirect to confirmation page
+    console.log({ projectId: project.id, investmentAmount, acceptedTerms, paymentMethod, proofFile });
+    onOpenChange?.(false);
     window.location.href = "/dashboard";
   };
 
@@ -89,20 +183,24 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
     return !isNaN(amount) && amount >= project.minimumInvestment;
   };
 
-  const renderStepIndicator = () => {
-    return (
-      <div className="flex items-center justify-center space-x-2 mb-6">
-        {Array.from({ length: totalSteps }).map((_, index) => (
-          <div
-            key={index}
-            className={`h-2.5 w-2.5 rounded-full ${
-              index + 1 === step ? "bg-filabe-teal" : index + 1 < step ? "bg-filabe-teal/60" : "bg-filabe-lightgray"
-            }`}
-          />
-        ))}
-      </div>
-    );
-  };
+  const renderStepIndicator = () => (
+    <div className="flex items-center justify-center space-x-2 mb-6">
+      {Array.from({ length: totalSteps }).map((_, index) => (
+        <div
+          key={index}
+          className={`h-2.5 w-2.5 rounded-full ${
+            index + 1 === step ? "bg-filabe-teal" : index + 1 < step ? "bg-filabe-teal/60" : "bg-filabe-lightgray"
+          }`}
+        />
+      ))}
+    </div>
+  );
+
+  // ── El step del fideicomiso se muestra cuando NO es compliant ────────
+  const fideicomisoStep = !isCompliant ? 1 : null; // step 1 si no es compliant
+  const amountStep = isCompliant ? 1 : 2;
+  const termsStep = isCompliant ? 2 : 3;
+  const paymentStep = isCompliant ? 3 : 4;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,7 +215,89 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
         {renderStepIndicator()}
 
-        {step === 1 && (
+        {/* ── STEP FIDEICOMISO (solo si no es compliant) ── */}
+        {step === fideicomisoStep && !isCompliant && (
+          <div className="space-y-2 py-2">
+            <div className="flex justify-center">
+              <Button
+                onClick={async () => {
+                  const pdfUrl = GENERIC_DOCUMENT_URI;
+                  try {
+                    const response = await fetch(pdfUrl);
+                    if (!response.ok) throw new Error("Error al descargar");
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "Contrato_Fideicomiso.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                  } catch {
+                    window.open(pdfUrl, "_blank");
+                  }
+                }}
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Descargar Fideicomiso
+              </Button>
+            </div>
+
+            <Label className="text-filabe-text mt-5">Subir Fideicomiso firmado digitalmente</Label>
+
+            <div className="mt-2 rounded-lg border border-dashed border-filabe-lightgray transition-colors hover:bg-filabe-dark/20">
+              {isSigning ? (
+                /* Estado: procesando firma + subida */
+                <div className="flex flex-col items-center justify-center p-8 space-y-3">
+                  <Loader2 className="h-10 w-10 text-filabe-teal animate-spin" />
+                  <p className="text-sm text-filabe-text/70">Procesando firma y subida...</p>
+                </div>
+              ) : proofPreview ? (
+                /* Estado: archivo listo */
+                <div className="flex flex-col items-center justify-center p-8 space-y-4 w-full">
+                  <div className="relative h-40 w-full overflow-hidden rounded-lg">
+                    <div className="flex flex-col items-center justify-center h-full w-full bg-filabe-dark/40 rounded-lg text-filabe-text/80">
+                      <FileText className="h-12 w-12 text-filabe-teal mb-2" />
+                      <span className="text-sm font-medium px-4 text-center truncate max-w-xs">{proofFile?.name}</span>
+                      <span className="text-xs text-filabe-teal mt-1">✓ Firmado y enviado on-chain</span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border-filabe-lightgray text-filabe-text hover:bg-filabe-dark"
+                    onClick={() => {
+                      setProofFile(null);
+                      setProofPreview(null);
+                    }}
+                  >
+                    Eliminar y Subir Otro Documento
+                  </Button>
+                </div>
+              ) : (
+                /* Estado: esperando archivo */
+                <label
+                  htmlFor="proof-upload"
+                  className="flex flex-col items-center justify-center p-8 cursor-pointer w-full text-center group"
+                >
+                  <Upload className="h-8 w-8 text-filabe-text/70 mb-3 transition-colors group-hover:text-filabe-teal" />
+                  <p className="text-sm text-filabe-text/90 font-medium mb-1">
+                    Arrastra y suelta el fideicomiso firmado aquí
+                  </p>
+                  <p className="text-xs text-filabe-text/60 mb-4">Al subir, se pedirá firma EIP-712 en tu wallet</p>
+                  <span className="text-[11px] px-3 py-1 bg-filabe-dark rounded-full text-filabe-text/50 border border-filabe-lightgray/30">
+                    Solo PDF · Máx 5MB
+                  </span>
+                  <Input id="proof-upload" type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
+                </label>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP MONTO ── */}
+        {step === amountStep && (
           <div className="space-y-4 py-2">
             <div className="flex items-center gap-4 p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
               <div className="relative h-16 w-16 overflow-hidden rounded-md shrink-0">
@@ -181,45 +361,23 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
           </div>
         )}
 
-        {step === 2 && (
+        {/* ── STEP TÉRMINOS ── */}
+        {step === termsStep && (
           <div className="space-y-4 py-2">
             <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
               <h3 className="font-medium mb-2 text-filabe-text">Términos y Condiciones</h3>
               <div className="max-h-48 overflow-y-auto text-sm text-filabe-text/70 p-2 border rounded-md bg-filabe-gray border-filabe-lightgray">
                 <p className="mb-2">Yo, el abajo firmante, declaro que:</p>
                 <ol className="list-decimal pl-5 space-y-2">
-                  <li>
-                    Toda la información proporcionada en relación con esta inversión es verdadera, precisa y completa
-                    según mi leal saber y entender.
-                  </li>
-                  <li>
-                    Los fondos que estoy invirtiendo provienen de fuentes legítimas y no representan ganancias de
-                    ninguna actividad ilícita.
-                  </li>
-                  <li>
-                    Entiendo que las inversiones inmobiliarias implican riesgos, incluida la posible pérdida del
-                    capital, y que el rendimiento pasado no garantiza resultados futuros.
-                  </li>
-                  <li>
-                    Reconozco que esta inversión está sujeta a los plazos de construcción y entrega establecidos en el
-                    contrato.
-                  </li>
-                  <li>
-                    He revisado todos los documentos de la oferta y comprendo los términos y condiciones asociados con
-                    esta inversión.
-                  </li>
-                  <li>
-                    Estoy realizando esta inversión basándome en mi propia evaluación independiente de los méritos y
-                    riesgos de la inversión.
-                  </li>
+                  <li>Toda la información proporcionada es verdadera, precisa y completa.</li>
+                  <li>Los fondos provienen de fuentes legítimas.</li>
+                  <li>Entiendo que las inversiones inmobiliarias implican riesgos.</li>
+                  <li>Esta inversión está sujeta a los plazos establecidos en el contrato.</li>
+                  <li>He revisado todos los documentos y comprendo los términos.</li>
+                  <li>Realizo esta inversión basándome en mi propia evaluación independiente.</li>
                 </ol>
-                <p className="mt-2">
-                  Entiendo que hacer una declaración falsa puede constituir perjurio y puede estar sujeto a sanciones
-                  legales.
-                </p>
               </div>
             </div>
-
             <div className="flex items-start space-x-2">
               <Checkbox
                 id="terms"
@@ -228,36 +386,24 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                 className="border-filabe-lightgray data-[state=checked]:bg-filabe-teal data-[state=checked]:border-filabe-teal mt-1"
               />
               <div className="grid gap-1.5 leading-none">
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none text-filabe-text peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
+                <label htmlFor="terms" className="text-sm font-medium leading-none text-filabe-text">
                   Acepto los términos y condiciones
                 </label>
                 <p className="text-sm text-filabe-text/70">
-                  Al marcar esta casilla, confirmo que he leído, entendido y acepto los términos anteriores.
+                  Al marcar esta casilla, confirmo que he leído y acepto los términos anteriores.
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {step === 3 && (
+        {/* ── STEP PAGO ── */}
+        {step === paymentStep && (
           <div className="space-y-4 py-2">
             <div className="space-y-2">
               <Label className="text-filabe-text">Seleccionar Método de Pago</Label>
-              <Tabs
-                defaultValue="crypto"
-                onValueChange={value => setPaymentMethod(value as "bank" | "crypto")}
-                className="border-filabe-lightgray"
-              >
+              <Tabs defaultValue="crypto" onValueChange={v => setPaymentMethod(v as "bank" | "crypto")}>
                 <TabsList className="grid w-full grid-cols-1 bg-filabe-dark">
-                  {/* <TabsTrigger
-                    value="bank"
-                    className="data-[state=active]:bg-filabe-teal data-[state=active]:text-filabe-dark"
-                  >
-                    Transferencia Bancaria
-                  </TabsTrigger> */}
                   <TabsTrigger
                     value="crypto"
                     className="data-[state=active]:bg-filabe-teal data-[state=active]:text-filabe-dark w-full"
@@ -265,25 +411,12 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                     Criptomoneda
                   </TabsTrigger>
                 </TabsList>
-
                 <TabsContent value="crypto" className="space-y-4 pt-4">
                   <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
                     <h3 className="font-medium mb-2 flex items-center text-filabe-text">
-                      <Wallet className="h-4 w-4 mr-2 text-filabe-teal" /> Detalles de Pago con Criptomonedas
+                      <Wallet className="h-4 w-4 mr-2 text-filabe-teal" /> Detalles de Pago
                     </h3>
                     <div className="space-y-3 text-sm">
-                      <div className="space-y-1">
-                        <span className="text-filabe-text/70">Dirección Bitcoin (BTC):</span>
-                        <div className="p-2 bg-filabe-gray rounded border border-filabe-lightgray break-all font-mono text-xs text-filabe-text">
-                          bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-filabe-text/70">Dirección Ethereum (ETH):</span>
-                        <div className="p-2 bg-filabe-gray rounded border border-filabe-lightgray break-all font-mono text-xs text-filabe-text">
-                          0x71C7656EC7ab88b098defB751B7401B5f6d8976F
-                        </div>
-                      </div>
                       <div className="space-y-1">
                         <span className="text-filabe-text/70">Dirección USDT:</span>
                         <div className="p-2 bg-filabe-gray rounded border border-filabe-lightgray break-all font-mono text-xs text-filabe-text">
@@ -297,104 +430,9 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                         </span>
                       </div>
                     </div>
-                    <div className="mt-4 text-sm text-filabe-text/70">
-                      <p>
-                        Por favor incluye el número de referencia en el memo de la transacción si es posible. Los pagos
-                        con criptomonedas suelen confirmarse en 1 hora.
-                      </p>
-                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label className="text-filabe-text">Subir Comprobante de Pago</Label>
-              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-filabe-lightgray p-8">
-                {proofPreview ? (
-                  <div className="space-y-4 w-full">
-                    <div className="relative h-40 w-full overflow-hidden rounded-lg">
-                      <Image
-                        src={proofPreview || "/placeholder.svg"}
-                        alt="Comprobante de pago"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full border-filabe-lightgray text-filabe-text hover:bg-filabe-dark"
-                      onClick={() => {
-                        setProofFile(null);
-                        setProofPreview(null);
-                      }}
-                    >
-                      Eliminar y Subir Otro Archivo
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Upload className="h-8 w-8 text-filabe-text/70 mb-2" />
-                    <p className="text-sm text-filabe-text/70 mb-1">
-                      Arrastra y suelta tu comprobante de pago aquí o haz clic para buscar
-                    </p>
-                    <p className="text-xs text-filabe-text/70">Formatos soportados: JPG, PNG, PDF (Máx 5MB)</p>
-                    <Label
-                      htmlFor="proof-upload"
-                      className="mt-4 cursor-pointer inline-flex h-9 items-center justify-center rounded-md bg-filabe-teal px-4 py-2 text-sm font-medium text-filabe-dark shadow transition-colors hover:bg-filabe-teal/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                    >
-                      Seleccionar Archivo
-                    </Label>
-                    <Input
-                      id="proof-upload"
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.pdf"
-                      className="sr-only"
-                      onChange={handleFileChange}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
-              <h3 className="font-medium mb-2 flex items-center text-filabe-text">
-                <Check className="h-4 w-4 mr-2 text-filabe-teal" /> Resumen de Inversión
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-filabe-text/70">Proyecto:</span>
-                  <span className="font-medium text-filabe-text">{project.title}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-filabe-text/70">Monto de Inversión:</span>
-                  <span className="font-medium text-filabe-text">
-                    ${Number.parseFloat(investmentAmount).toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-filabe-text/70">Método de Pago:</span>
-                  <span className="font-medium text-filabe-text capitalize">
-                    {paymentMethod === "bank" ? "Transferencia Bancaria" : "Criptomoneda"}
-                  </span>
-                </div>
-                <Separator className="bg-filabe-lightgray" />
-                <div className="flex justify-between">
-                  <span className="text-filabe-text/70">Estado:</span>
-                  <span className="font-medium text-yellow-500">Pendiente de Verificación</span>
-                </div>
-              </div>
-              <div className="mt-4 text-sm text-filabe-text/70">
-                <p>
-                  Nuestro equipo verificará tu pago en un plazo de 1-2 días hábiles. Recibirás un correo electrónico de
-                  confirmación una vez que tu inversión sea procesada.
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -409,22 +447,24 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
               <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
             </Button>
           ) : (
-            <div></div>
+            <div />
           )}
+
           {step < totalSteps ? (
             <Button
               onClick={handleNext}
-              disabled={(step === 1 && !isAmountValid()) || (step === 2 && !acceptedTerms)}
+              disabled={
+                (step === fideicomisoStep && !proofFile) || // 👈 bloquea si no firmó el fideicomiso
+                (step === amountStep && !isAmountValid()) ||
+                (step === termsStep && !acceptedTerms) ||
+                isSigning
+              }
               className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
             >
               Siguiente <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button
-              onClick={handleSubmit}
-              disabled={!proofFile}
-              className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
-            >
+            <Button onClick={handleSubmit} className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
               Completar Inversión
             </Button>
           )}
