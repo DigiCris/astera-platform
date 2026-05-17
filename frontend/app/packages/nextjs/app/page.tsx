@@ -92,7 +92,7 @@ const itemCardVariants = {
 export default function HomePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-  
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
@@ -109,7 +109,7 @@ export default function HomePage() {
           className="relative w-full py-24 md:py-32 lg:py-40 bg-cover bg-center"
           style={{ backgroundImage: 'url("/images/filabe_hero.png")' }}
         >
-        <div className="absolute inset-0 bg-black/50"></div>
+          <div className="absolute inset-0 bg-black/50"></div>
           <div className="container relative px-4 md:px-6 z-10 flex justify-center items-center">
             <div className="max-w-2xl text-center">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none mb-6 text-filabe-text">
@@ -138,8 +138,8 @@ export default function HomePage() {
         <section className="bg-filabe-dark relative py-20 lg:py-28 overflow-hidden">
           {/* Sutil brillo de fondo de red de nodos */}
           <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
-          
-          <motion.div 
+
+          <motion.div
             className="container relative z-10 px-4 md:px-6"
             variants={containerVariants}
             initial="hidden"
@@ -147,7 +147,7 @@ export default function HomePage() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              
+
               {/* Bloque Izquierdo del Texto */}
               <motion.div variants={itemLeftVariants} className="lg:col-span-5 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-filabe-teal/20 bg-filabe-teal/5 text-xs font-medium text-filabe-teal tracking-wide uppercase">
@@ -161,12 +161,12 @@ export default function HomePage() {
                   En Astera, nos enfocamos en el impacto de la tecnología ledger distribuida para optimizar la liquidez global y automatizar el cumplimiento en mercados financieros permissioned.
                 </p>
               </motion.div>
-              
+
               {/* Bloque Derecho: Bento Grid Interactivo con Métricas */}
               <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
+
                 {/* Card Destacada Principal (100% On-Chain) */}
-                <motion.div 
+                <motion.div
                   variants={itemCardVariants}
                   whileHover={{ y: -6, borderHorizontal: "1px solid #00f2fe" }}
                   className="sm:col-span-2 border border-filabe-lightgray bg-filabe-gray/60 p-8 rounded-2xl relative overflow-hidden backdrop-blur-sm group hover:border-filabe-teal/30 transition-all duration-300"
@@ -192,7 +192,7 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Card Sub-Second Finality */}
-                <motion.div 
+                <motion.div
                   variants={itemCardVariants}
                   whileHover={{ y: -6 }}
                   className="border border-filabe-lightgray bg-filabe-gray/40 p-6 rounded-2xl hover:border-filabe-teal/30 transition-all duration-300"
@@ -208,7 +208,7 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Card Enterprise PSAV */}
-                <motion.div 
+                <motion.div
                   variants={itemCardVariants}
                   whileHover={{ y: -6 }}
                   className="border border-filabe-lightgray bg-filabe-gray/40 p-6 rounded-2xl hover:border-filabe-teal/30 transition-all duration-300"
@@ -228,7 +228,7 @@ export default function HomePage() {
           </motion.div>
         </section>
 
-        {/* Featured Projects */}
+        {/* Featured Projects 
         <section className="bg-filabe-dark">
           <div className="filabe-container">
             <div className="flex flex-col items-start justify-center space-y-2 mb-12">
@@ -304,13 +304,13 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-      {/* How It Works - Rediseñado e Institucional */}
+      */}
+        {/* How It Works - Rediseñado e Institucional */}
         <section className="bg-filabe-gray relative py-20 overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
-          
+
           <div className="filabe-container relative z-10">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -326,7 +326,7 @@ export default function HomePage() {
               </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -334,7 +334,7 @@ export default function HomePage() {
               className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3"
             >
               {/* Paso 1 */}
-              <motion.div 
+              <motion.div
                 variants={itemCardVariants}
                 whileHover={{ y: -6 }}
                 className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
@@ -349,7 +349,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Paso 2 */}
-              <motion.div 
+              <motion.div
                 variants={itemCardVariants}
                 whileHover={{ y: -6 }}
                 className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
@@ -364,7 +364,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Paso 3 */}
-              <motion.div 
+              <motion.div
                 variants={itemCardVariants}
                 whileHover={{ y: -6 }}
                 className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
@@ -379,7 +379,7 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -398,12 +398,12 @@ export default function HomePage() {
         {/* Filosofía y Valores / Nuestra Visión */}
         <section className="bg-filabe-dark relative py-20 lg:py-28 overflow-hidden">
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
-          
+
           <div className="filabe-container relative z-10">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
-              
+
               {/* Bloque Izquierdo con Lista Escalonada */}
-              <motion.div 
+              <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -460,7 +460,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Bloque Derecho con Frame de Imagen Animado */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95, x: 40 }}
                 whileInView={{ opacity: 1, scale: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -469,14 +469,14 @@ export default function HomePage() {
               >
                 {/* Glowing neon background border aura */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-filabe-teal/20 to-transparent rounded-2xl blur-xl" />
-                
-                <motion.div 
+
+                <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="aspect-square overflow-hidden rounded-2xl border border-filabe-lightgray bg-filabe-gray/40 p-2 backdrop-blur-sm shadow-2xl shadow-black/40"
                 >
                   <Image
-                    src="/placeholder.svg?height=800&width=800"
+                    src="/astera_favicon_256.png"
                     alt="Infraestructura Blockchain Astera"
                     width={800}
                     height={800}
@@ -567,7 +567,7 @@ export default function HomePage() {
         </section>
       </main>
 
-    {/* Footer */}
+      {/* Footer */}
       <footer className="bg-filabe-dark border-t border-filabe-lightgray py-12">
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

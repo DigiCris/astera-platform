@@ -20,6 +20,7 @@ import {
   Users,
   Terminal,
   Cpu,
+  ShieldCheck,
   Fingerprint
 } from "lucide-react";
 import { LoginModal } from "~~/components/auth/login-modal";
@@ -39,10 +40,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 25 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 15 } 
+    transition: { type: "spring", stiffness: 100, damping: 15 }
   }
 };
 
@@ -65,9 +66,9 @@ export default function HowItWorksPage() {
         <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-filabe-teal/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          
+
           {/* Hero Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -86,7 +87,7 @@ export default function HowItWorksPage() {
 
           {/* Proceso de Operación Regulada (Timeline interactiva) */}
           <div className="mb-32">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -94,8 +95,8 @@ export default function HowItWorksPage() {
             >
               Flujo de Emisión y Operación
             </motion.h2>
-            
-            <motion.div 
+
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -195,7 +196,7 @@ export default function HowItWorksPage() {
 
           {/* Arquitectura y Desarrollo (Bento Grid Rediseñado) */}
           <div className="mb-12">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -204,7 +205,7 @@ export default function HowItWorksPage() {
               Arquitectura y Desarrollo
             </motion.h2>
 
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -268,244 +269,227 @@ export default function HowItWorksPage() {
 
           {/* Proyectos Destacados */}
           <div className="mb-20">
-            <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Proyectos Destacados</h2>
+            <div className="flex flex-col items-center mb-10 space-y-2">
+              <h2 className="text-center text-3xl font-extrabold tracking-tight text-filabe-text">
+                Proyectos Destacados
+              </h2>
+              <div className="h-0.5 w-12 bg-filabe-teal rounded-full opacity-60" />
+            </div>
+
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-filabe-lightgray bg-filabe-gray">
-                <CardHeader>
-                  <CardTitle className="text-filabe-text">Terrazas Diez</CardTitle>
-                  <CardDescription className="text-filabe-text/70">Berazategui</CardDescription>
+              {/* Proyecto 1: Terrazas Diez */}
+              <Card className="bg-filabe-gray/10 border-filabe-lightgray/30 backdrop-blur-sm rounded-2xl overflow-hidden hover:border-filabe-teal/40 transition-all duration-300 group flex flex-col justify-between shadow-xl shadow-black/10">
+                <CardHeader className="p-5 pb-3">
+                  <CardTitle className="text-lg font-bold text-filabe-text group-hover:text-filabe-teal transition-colors">
+                    Solaria Alpine Array
+                  </CardTitle>
+                  <CardDescription className="text-[11px] font-mono uppercase tracking-wider text-filabe-text/50 mt-1 flex items-center gap-1.5">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-filabe-teal" /> Zermatt, Suiza
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="mb-4 aspect-video overflow-hidden rounded-md bg-filabe-dark">
-                    <Image
-                      src="/placeholder.svg?height=400&width=600"
-                      alt="Terrazas Diez"
-                      width={600}
-                      height={400}
-                      className="h-full w-full object-cover"
-                    />
+                <CardContent className="p-5 pt-0 space-y-4 flex-1 flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="aspect-video overflow-hidden rounded-xl border border-filabe-lightgray/20 bg-filabe-dark/50 relative">
+                      <Image
+                        src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=600&auto=format&fit=crop"
+                        alt="Solaria Alpine Array"
+                        width={600}
+                        height={400}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-102"
+                      />
+                    </div>
+                    <p className="text-xs leading-relaxed text-filabe-text/70">
+                      Micro-grid solar, contratos PPA firmados
+                    </p>
                   </div>
-                  <p className="mb-4 text-filabe-text/70">
-                    Torre de 13 pisos con sistema de energía solar, cocheras, terraza con sum, y ascensores de última
-                    generación.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Energía solar para espacios comunes</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Balcones amplios con vistas únicas</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Diseño sustentable y moderno</span>
-                    </li>
-                  </ul>
                 </CardContent>
               </Card>
 
-              <Card className="border-filabe-lightgray bg-filabe-gray">
-                <CardHeader>
-                  <CardTitle className="text-filabe-text">Arenas Villarobles</CardTitle>
-                  <CardDescription className="text-filabe-text/70">Villarobles, Costa Atlántica</CardDescription>
+              <Card className="bg-filabe-gray/10 border-filabe-lightgray/30 backdrop-blur-sm rounded-2xl overflow-hidden hover:border-filabe-teal/40 transition-all duration-300 group flex flex-col justify-between shadow-xl shadow-black/10">
+                <CardHeader className="p-5 pb-3">
+                  <CardTitle className="text-lg font-bold text-filabe-text group-hover:text-filabe-teal transition-colors">
+                    Aether Data Tower
+                  </CardTitle>
+                  <CardDescription className="text-[11px] font-mono uppercase tracking-wider text-filabe-text/50 mt-1 flex items-center gap-1.5">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-filabe-teal" /> Frankfurt, Alemania
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="mb-4 aspect-video overflow-hidden rounded-md bg-filabe-dark">
-                    <Image
-                      src="/placeholder.svg?height=400&width=600"
-                      alt="Arenas Villarobles"
-                      width={600}
-                      height={400}
-                      className="h-full w-full object-cover"
-                    />
+                <CardContent className="p-5 pt-0 space-y-4 flex-1 flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="aspect-video overflow-hidden rounded-xl border border-filabe-lightgray/20 bg-filabe-dark/50 relative">
+                      <Image
+                        src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop"
+                        alt="Aether Data Tower"
+                        width={600}
+                        height={400}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-102"
+                      />
+                    </div>
+                    <p className="text-xs leading-relaxed text-filabe-text/70">
+                      Tier IV Data Center, refrigeración líquida
+                    </p>
                   </div>
-                  <p className="mb-4 text-filabe-text/70">
-                    Desarrollo residencial frente al mar con volúmenes escalonados que maximizan las vistas.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Diseño armonioso con la naturaleza</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Espacios verdes y amenities exclusivos</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Ubicación privilegiada frente al mar</span>
-                    </li>
-                  </ul>
                 </CardContent>
               </Card>
 
-              <Card className="border-filabe-lightgray bg-filabe-gray">
-                <CardHeader>
-                  <CardTitle className="text-filabe-text">Magnolias</CardTitle>
-                  <CardDescription className="text-filabe-text/70">Sourigues</CardDescription>
+              {/* Proyecto 3: Magnolias */}
+              <Card className="bg-filabe-gray/10 border-filabe-lightgray/30 backdrop-blur-sm rounded-2xl overflow-hidden hover:border-filabe-teal/40 transition-all duration-300 group flex flex-col justify-between shadow-xl shadow-black/10">
+                <CardHeader className="p-5 pb-3">
+                  <CardTitle className="text-lg font-bold text-filabe-text group-hover:text-filabe-teal transition-colors">
+                    Veridian Logistics Hub
+                  </CardTitle>
+                  <CardDescription className="text-[11px] font-mono uppercase tracking-wider text-filabe-text/50 mt-1 flex items-center gap-1.5">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-filabe-teal" /> Puerto de Rotterdam, Países Bajos
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="mb-4 aspect-video overflow-hidden rounded-md bg-filabe-dark">
-                    <Image
-                      src="/placeholder.svg?height=400&width=600"
-                      alt="Magnolias"
-                      width={600}
-                      height={400}
-                      className="h-full w-full object-cover"
-                    />
+                <CardContent className="p-5 pt-0 space-y-4 flex-1 flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="aspect-video overflow-hidden rounded-xl border border-filabe-lightgray/20 bg-filabe-dark/50 relative">
+                      <Image
+                        src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600&auto=format&fit=crop"
+                        alt="Magnolias"
+                        width={600}
+                        height={400}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-102"
+                      />
+                    </div>
+                    <p className="text-xs leading-relaxed text-filabe-text/70">
+                      Distribución automatizada, AI drone delivery ready
+                    </p>
                   </div>
-                  <p className="mb-4 text-filabe-text/70">
-                    Barrio cerrado de casas estilo Townhouses, integrado en un entorno natural.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Entorno natural privilegiado</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Seguridad las 24 horas</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-filabe-teal" />
-                      <span className="text-filabe-text/70">Espacios comunes para toda la familia</span>
-                    </li>
-                  </ul>
                 </CardContent>
               </Card>
             </div>
           </div>
 
-        {/* Valores */}
-<div className="mb-24 relative">
-  <motion.h2 
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    viewport={{ once: true }}
-    className="mb-12 text-center text-2xl md:text-3xl font-black tracking-tight uppercase text-filabe-text"
-  >
-    Nuestros Valores Core
-  </motion.h2>
-  
-  <motion.div 
-    variants={containerVariants}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true, margin: "-100px" }}
-    className="grid gap-4 sm:grid-cols-2 md:grid-cols-5"
-  >
-    {/* Confianza */}
-    <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-      <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
-            <Shield className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
-            Confianza
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </motion.div>
+          {/* Valores */}
+          <div className="mb-24 relative">
+            <motion.h2
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="mb-12 text-center text-2xl md:text-3xl font-black tracking-tight uppercase text-filabe-text"
+            >
+              Nuestros Valores Core
+            </motion.h2>
 
-    {/* Servicio */}
-    <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-      <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
-            <Users className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
-            Servicio
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </motion.div>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="grid gap-4 sm:grid-cols-2 md:grid-cols-5"
+            >
+              {/* Confianza */}
+              <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
+                      <Shield className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
+                      Confianza
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-    {/* Transparencia */}
-    <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-      <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
-            <Coins className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
-            Transparencia
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </motion.div>
+              {/* Servicio */}
+              <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
+                      <Users className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
+                      Servicio
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-    {/* Compromiso */}
-    <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-      <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
-            <Clock className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
-            Compromiso
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </motion.div>
+              {/* Transparencia */}
+              <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
+                      <Coins className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
+                      Transparencia
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-    {/* Innovación */}
-    <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-      <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
-            <Lightbulb className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
-            Innovación
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </motion.div>
-  </motion.div>
-</div>
+              {/* Compromiso */}
+              <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
+                      <Clock className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
+                      Compromiso
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-{/* CTA Sección */}
-<motion.div 
-  initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.5, ease: "easeOut" }}
-  className="relative rounded-2xl border border-filabe-teal/20 bg-gradient-to-br from-filabe-gray/60 to-filabe-dark/90 p-8 md:p-12 text-center overflow-hidden group shadow-xl shadow-filabe-teal-[2px]"
->
-  {/* Efecto decorativo de red/nodo */}
-  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-filabe-teal/10 rounded-full blur-2xl pointer-events-none group-hover:bg-filabe-teal/20 transition-colors duration-500" />
-  
-  <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-    <h2 className="text-3xl md:text-4xl font-black tracking-tight text-filabe-text">
-      ¿Listo para escalar tu infraestructura<span className="text-filabe-teal animate-pulse">_</span>?
-    </h2>
-    <p className="text-sm md:text-base text-filabe-text/70 leading-relaxed max-w-xl mx-auto">
-      Únete al ecosistema de Astera y despliega módulos financieros automatizados bajo el estándar tecnológico on-chain más seguro del mercado.
-    </p>
-    <div className="pt-4">
-      <Button 
-        asChild 
-        size="lg" 
-        className="bg-filabe-teal text-filabe-dark font-bold tracking-wide hover:bg-filabe-teal/90 transition-all duration-300 shadow-md hover:shadow-filabe-teal/20 px-8 rounded-xl group/btn"
-      >
-        <Link href="/projects" className="inline-flex items-center gap-2">
-          Explorar Protocolos 
-          <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-        </Link>
-      </Button>
-    </div>
-  </div>
-</motion.div>
-</div>
+              {/* Innovación */}
+              <motion.div variants={itemVariants} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                <Card className="border-filabe-lightgray bg-filabe-gray/30 backdrop-blur-sm h-full transition-all duration-300 hover:border-filabe-teal/40 group relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-filabe-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardHeader className="flex flex-col items-center justify-center p-6 text-center h-full space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-filabe-teal/5 border border-filabe-teal/10 text-filabe-teal group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300 shadow-inner">
+                      <Lightbulb className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base font-bold text-filabe-text tracking-tight group-hover:text-filabe-teal transition-colors duration-200">
+                      Innovación
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* CTA Sección */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="relative rounded-2xl border border-filabe-teal/20 bg-gradient-to-br from-filabe-gray/60 to-filabe-dark/90 p-8 md:p-12 text-center overflow-hidden group shadow-xl shadow-filabe-teal-[2px]"
+          >
+            {/* Efecto decorativo de red/nodo */}
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-filabe-teal/10 rounded-full blur-2xl pointer-events-none group-hover:bg-filabe-teal/20 transition-colors duration-500" />
+
+            <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight text-filabe-text">
+                ¿Listo para escalar tu infraestructura<span className="text-filabe-teal animate-pulse">_</span>?
+              </h2>
+              <p className="text-sm md:text-base text-filabe-text/70 leading-relaxed max-w-xl mx-auto">
+                Únete al ecosistema de Astera y despliega módulos financieros automatizados bajo el estándar tecnológico on-chain más seguro del mercado.
+              </p>
+              <div className="pt-4">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-filabe-teal text-filabe-dark font-bold tracking-wide hover:bg-filabe-teal/90 transition-all duration-300 shadow-md hover:shadow-filabe-teal/20 px-8 rounded-xl group/btn"
+                >
+                  <Link href="/projects" className="inline-flex items-center gap-2">
+                    Explorar Protocolos
+                    <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </main>
 
       {/* Footer */}
