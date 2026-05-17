@@ -9,3 +9,4 @@ plan.txt
 .env
 .env.*
 !.env.example
+.env.deploy-token.tmp
