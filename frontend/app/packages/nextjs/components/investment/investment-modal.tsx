@@ -202,7 +202,9 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
     const amount = usdcAmount();
     if (amount === 0n) return;
     try {
-      const exchangeAddress = "0x640C0638703D18B0d5B878606224FC3a592E92D6";
+      // Separamos las direcciones correctamente para no cruzarlas
+      const USDC_TOKEN_ADDRESS = "0x640C0638703D18B0d5B878606224FC3a592E92D6";
+      const EXCHANGE_CONTRACT_ADDRESS = "0x89B2b2FE6fC68a865A258c2C99adaCF5aF4c5A35";
 
       // ── Step 1: Approve ──────────────────────────────────────────
       setPaymentStatus("approving");
@@ -210,8 +212,8 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
       await writeUSDC({
         functionName: "approve",
-        // Usamos 'amount' directamente porque ya es el BigInt que espera el contrato
-        args: [exchangeAddress, amount],
+        // IMPORTANTE: Le das permiso al EXCHANGE de gastar tus USDC
+        args: [EXCHANGE_CONTRACT_ADDRESS, amount],
       });
 
       toast.success("USDC aprobado ✓", { id: "payment" });
@@ -223,8 +225,8 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
       await writeExchange({
         functionName: "buy",
-        // Aquí también pasamos 'amount' directo
-        args: [exchangeAddress, amount],
+        // El método buy recibe: (dirección del token que vas a usar, cantidad)
+        args: [USDC_TOKEN_ADDRESS, amount],
       });
 
       toast.success("¡Inversión completada! ✓", { id: "payment" });

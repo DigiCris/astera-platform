@@ -34,7 +34,6 @@ const projects = [
     location: "Zermatt, Suiza",
     type: "Energía Renovable",
     features: "Micro-grid solar, contratos PPA firmados",
-    minimumInvestment: 1,
     targetReturn: 12,
     fundingProgress: 75,
     timeLeft: 12,
@@ -47,7 +46,6 @@ const projects = [
     location: "Frankfurt, Alemania",
     type: "Infraestructura Tech",
     features: "Tier IV Data Center, refrigeración líquida",
-    minimumInvestment: 1,
     targetReturn: 14,
     fundingProgress: 60,
     timeLeft: 18,
@@ -60,7 +58,6 @@ const projects = [
     location: "Puerto de Rotterdam, Países Bajos",
     type: "Logística Industrial",
     features: "Distribución automatizada, AI drone delivery ready",
-    minimumInvestment: 1,
     targetReturn: 9.5,
     fundingProgress: 40,
     timeLeft: 24,
@@ -86,7 +83,6 @@ const projects = [
     location: "Austin, Texas, EE. UU.",
     type: "Eólico Core",
     features: "Turbinas de última generación, subsidios ITC aprobados",
-    minimumInvestment: 1,
     targetReturn: 8.8,
     fundingProgress: 25,
     timeLeft: 30,
@@ -141,7 +137,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     );
   }
 
-  const totalFunding = project.minimumInvestment * 100;
+  const totalFunding = 40 * 100;
   const currentFunding = (totalFunding * project.fundingProgress) / 100;
 
   const investmentHighlights = [
@@ -168,17 +164,17 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const investmentTiers = [
     {
       name: "Starter",
-      amount: project.minimumInvestment,
+      amount: 40,
       benefits: ["Acceso al proyecto", "Dashboard de seguimiento"],
     },
     {
       name: "Professional",
-      amount: project.minimumInvestment * 2,
+      amount: 40 * 2,
       benefits: ["Acceso prioritario", "Reportes premium", "Invitaciones privadas"],
     },
     {
       name: "Institutional",
-      amount: project.minimumInvestment * 5,
+      amount: 40 * 5,
       benefits: ["Asignación preferencial", "Asesor dedicado", "Eventos exclusivos"],
     },
   ];
@@ -381,7 +377,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     <div className="flex justify-between">
                       <p className="text-sm text-filabe-text/70">Inversión mínima</p>
 
-                      <p className="font-medium text-filabe-text">${project.minimumInvestment.toLocaleString()}</p>
+                      <p className="font-medium text-filabe-text">$40</p>
                     </div>
 
                     <div className="flex justify-between">
@@ -471,7 +467,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         project={{
           id: project.id,
           title: project.title,
-          minimumInvestment: project.minimumInvestment,
+          minimumInvestment: 0.001,
           image: project.image,
         }}
       />
