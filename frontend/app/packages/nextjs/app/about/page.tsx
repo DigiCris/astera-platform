@@ -24,11 +24,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.98 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 90, damping: 16 } 
+    transition: { type: "spring", stiffness: 90, damping: 16 }
   }
 };
 
@@ -58,10 +58,10 @@ export default function AboutPage() {
         <div className="absolute bottom-1/3 right-10 w-96 h-96 bg-filabe-teal/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          
+
           {/* Hero Header Section */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
@@ -83,7 +83,7 @@ export default function AboutPage() {
             </motion.div>
 
             {/* Elemento Gráfico Interactivo a la derecha */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, x: 20 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 60 }}
@@ -108,7 +108,7 @@ export default function AboutPage() {
           </div>
 
           {/* Misión y Visión Balanceadas */}
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -164,7 +164,7 @@ export default function AboutPage() {
               <p className="text-filabe-text/60 text-sm mt-2">Módulos avanzados integrados en nuestro ledger distribuido</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -240,7 +240,7 @@ export default function AboutPage() {
               <p className="text-filabe-text/60 text-sm mt-2">Los ingenieros detrás de la infraestructura descentralizada de Astera</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -254,7 +254,7 @@ export default function AboutPage() {
                     <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full p-1 bg-gradient-to-tr from-filabe-teal/30 to-transparent group-hover:from-filabe-teal transition-all duration-500 relative">
                       <div className="w-full h-full rounded-full overflow-hidden bg-filabe-dark">
                         <Image
-                          src="/placeholder.svg?height=200&width=200"
+                          src="/DigiCris.jpg?height=200&width=200"
                           alt="DigiCris"
                           width={200}
                           height={200}
@@ -282,7 +282,7 @@ export default function AboutPage() {
                     <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full p-1 bg-gradient-to-tr from-filabe-teal/30 to-transparent group-hover:from-filabe-teal transition-all duration-500 relative">
                       <div className="w-full h-full rounded-full overflow-hidden bg-filabe-dark">
                         <Image
-                          src="/placeholder.svg?height=200&width=200"
+                          src="/NightmareFox12.jpg?height=200&width=200"
                           alt="NightmareFox12"
                           width={200}
                           height={200}
@@ -310,7 +310,7 @@ export default function AboutPage() {
                     <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full p-1 bg-gradient-to-tr from-filabe-teal/30 to-transparent group-hover:from-filabe-teal transition-all duration-500 relative">
                       <div className="w-full h-full rounded-full overflow-hidden bg-filabe-dark">
                         <Image
-                          src="/placeholder.svg?height=200&width=200"
+                          src="/Echizen512.jpg?height=200&width=200"
                           alt="Echizen512"
                           width={200}
                           height={200}
@@ -387,116 +387,116 @@ export default function AboutPage() {
           </div>
           */}
 
-{/* Preguntas Frecuentes */}
-<div className="mb-20 relative" id="faq-section">
-  {/* Halo de luz de fondo sutil */}
-  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
+          {/* Preguntas Frecuentes */}
+          <div className="mb-20 relative" id="faq-section">
+            {/* Halo de luz de fondo sutil */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
 
-  <motion.h2 
-    initial={{ opacity: 0, y: -10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5 }}
-    className="mb-2 text-center text-3xl font-bold tracking-tight text-filabe-text relative z-10"
-  >
-    Preguntas Frecuentes
-  </motion.h2>
-  <p className="mb-12 text-center text-xs font-mono text-filabe-text/50 uppercase tracking-widest relative z-10">
-    &gt; astera_knowledge_base // protocol_docs
-  </p>
+            <motion.h2
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-2 text-center text-3xl font-bold tracking-tight text-filabe-text relative z-10"
+            >
+              Preguntas Frecuentes
+            </motion.h2>
+            <p className="mb-12 text-center text-xs font-mono text-filabe-text/50 uppercase tracking-widest relative z-10">
+              &gt; astera_knowledge_base // protocol_docs
+            </p>
 
-  <motion.div 
-    variants={containerVariants}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true, margin: "-100px" }}
-    className="max-w-4xl mx-auto grid gap-4 relative z-10"
-  >
-    {/* FAQ 1 - Compliance */}
-    <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-      <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-compliance">
-        <CardHeader className="p-5 pb-3">
-          <div className="flex items-start gap-4">
-            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
-              01
-            </div>
-            <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
-              ¿Cómo garantiza Astera el cumplimiento normativo (Compliance)?
-            </CardTitle>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="max-w-4xl mx-auto grid gap-4 relative z-10"
+            >
+              {/* FAQ 1 - Compliance */}
+              <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-compliance">
+                  <CardHeader className="p-5 pb-3">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
+                        01
+                      </div>
+                      <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
+                        ¿Cómo garantiza Astera el cumplimiento normativo (Compliance)?
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-14 pr-6 pb-5">
+                    <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
+                      Astera es <span className="text-filabe-teal font-medium">compliance-native</span>. El protocolo valida las reglas de elegibilidad, límites del mercado, restricciones de transferencia y procesos de freeze directamente en la lógica de los smart contracts antes de autorizar cualquier transacción.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* FAQ 2 - Custodia */}
+              <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-custodia">
+                  <CardHeader className="p-5 pb-3">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
+                        02
+                      </div>
+                      <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
+                        ¿Astera realiza custodia de los fondos de los inversores?
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-14 pr-6 pb-5">
+                    <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
+                      No. El modelo de Astera es de <span className="text-filabe-teal font-medium">no custodia</span>. La infraestructura enruta los fondos de las compras del mercado primario directamente a la wallet del fideicomiso, exchange regulado o estructura legal definida por el operador del sistema.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* FAQ 3 - Identidad */}
+              <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-identidad">
+                  <CardHeader className="p-5 pb-3">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
+                        03
+                      </div>
+                      <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
+                        ¿Cómo se vincula el proceso KYC con las wallets de los usuarios?
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-14 pr-6 pb-5">
+                    <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
+                      A través de una capa de identidad verificada. Cuando un usuario completa con éxito su proceso de KYC, su dirección de wallet se registra <span className="text-filabe-teal font-medium">on-chain</span> en una lista permissioned, habilitándola para recibir, operar o transferir los activos tokenizados bajo las reglas del mercado.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* FAQ 4 - Arquitectura */}
+              <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-arquitectura">
+                  <CardHeader className="p-5 pb-3">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
+                        04
+                      </div>
+                      <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
+                        ¿Qué tipo de modelo operativo ofrece para empresas y Fintechs?
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-14 pr-6 pb-5">
+                    <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
+                      Ofrecemos una solución modular <span className="text-filabe-teal font-medium">white-label</span>. Esto permite a los desarrolladores y plataformas financieras construir su propio frontend, marca y experiencia de usuario a medida, mientras que el operador regulado (PSAV) conserva el control administrativo centralizado de las reglas on-chain.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
           </div>
-        </CardHeader>
-        <CardContent className="pl-14 pr-6 pb-5">
-          <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
-            Astera es <span className="text-filabe-teal font-medium">compliance-native</span>. El protocolo valida las reglas de elegibilidad, límites del mercado, restricciones de transferencia y procesos de freeze directamente en la lógica de los smart contracts antes de autorizar cualquier transacción.
-          </p>
-        </CardContent>
-      </Card>
-    </motion.div>
-
-    {/* FAQ 2 - Custodia */}
-    <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-      <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-custodia">
-        <CardHeader className="p-5 pb-3">
-          <div className="flex items-start gap-4">
-            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
-              02
-            </div>
-            <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
-              ¿Astera realiza custodia de los fondos de los inversores?
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="pl-14 pr-6 pb-5">
-          <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
-            No. El modelo de Astera es de <span className="text-filabe-teal font-medium">no custodia</span>. La infraestructura enruta los fondos de las compras del mercado primario directamente a la wallet del fideicomiso, exchange regulado o estructura legal definida por el operador del sistema.
-          </p>
-        </CardContent>
-      </Card>
-    </motion.div>
-
-    {/* FAQ 3 - Identidad */}
-    <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-      <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-identidad">
-        <CardHeader className="p-5 pb-3">
-          <div className="flex items-start gap-4">
-            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
-              03
-            </div>
-            <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
-              ¿Cómo se vincula el proceso KYC con las wallets de los usuarios?
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="pl-14 pr-6 pb-5">
-          <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
-            A través de una capa de identidad verificada. Cuando un usuario completa con éxito su proceso de KYC, su dirección de wallet se registra <span className="text-filabe-teal font-medium">on-chain</span> en una lista permissioned, habilitándola para recibir, operar o transferir los activos tokenizados bajo las reglas del mercado.
-          </p>
-        </CardContent>
-      </Card>
-    </motion.div>
-
-    {/* FAQ 4 - Arquitectura */}
-    <motion.div variants={itemVariants} whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-      <Card className="border-filabe-lightgray bg-gradient-to-r from-filabe-gray to-filabe-gray/40 transition-all duration-300 hover:border-filabe-teal/30 hover:shadow-lg hover:shadow-filabe-teal/5" id="faq-arquitectura">
-        <CardHeader className="p-5 pb-3">
-          <div className="flex items-start gap-4">
-            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-md bg-filabe-teal/10 text-filabe-teal font-mono text-xs font-bold shrink-0">
-              04
-            </div>
-            <CardTitle className="text-filabe-text text-base md:text-lg font-bold">
-              ¿Qué tipo de modelo operativo ofrece para empresas y Fintechs?
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="pl-14 pr-6 pb-5">
-          <p className="text-filabe-text/70 text-sm md:text-base leading-relaxed">
-            Ofrecemos una solución modular <span className="text-filabe-teal font-medium">white-label</span>. Esto permite a los desarrolladores y plataformas financieras construir su propio frontend, marca y experiencia de usuario a medida, mientras que el operador regulado (PSAV) conserva el control administrativo centralizado de las reglas on-chain.
-          </p>
-        </CardContent>
-      </Card>
-    </motion.div>
-  </motion.div>
-</div>
           {/* Contacto 
           <div className="mb-20">
             <h2 className="mb-10 text-center text-3xl font-bold text-filabe-text">Nuestras Oficinas</h2>
@@ -582,7 +582,7 @@ export default function AboutPage() {
               </Link>
             </div>
           */}
-          </div>
+        </div>
       </main>
 
       {/* Footer */}
@@ -590,7 +590,7 @@ export default function AboutPage() {
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
             <div className="text-filabe-text font-bold text-xl flex items-center gap-2">
-              <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+              <img src="/favicon.png" alt="icon" className="h-16 w-16" />
               <span>ASTERA</span>
             </div>
           </div>
