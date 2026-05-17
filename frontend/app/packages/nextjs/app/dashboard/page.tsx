@@ -3,13 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, CreditCard, DollarSign, FileText, HelpCircle, LogOut, Menu, PieChart, User, Wallet } from "lucide-react";
-import { formatUnits, parseUnits } from "viem";
+import { DollarSign, Wallet } from "lucide-react";
+import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
 import { MainNav } from "~~/components/main-nav";
 import { Button } from "~~/components/ui/shadcn/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
-import { Sheet, SheetContent, SheetTrigger } from "~~/components/ui/shadcn/sheet";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~~/components/ui/shadcn/table";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
@@ -19,7 +18,7 @@ export default function DashboardPage() {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   //states
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [, setNotificationsOpen] = useState(false);
   const [expandedProjects, setExpandedProjects] = useState<number[]>([]);
 
   const { data: userBalance } = useScaffoldReadContract({
