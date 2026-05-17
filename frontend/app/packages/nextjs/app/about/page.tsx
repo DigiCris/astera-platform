@@ -254,7 +254,7 @@ export default function AboutPage() {
                     <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full p-1 bg-gradient-to-tr from-filabe-teal/30 to-transparent group-hover:from-filabe-teal transition-all duration-500 relative">
                       <div className="w-full h-full rounded-full overflow-hidden bg-filabe-dark">
                         <Image
-                          src="/DigiCris.jpg?height=200&width=200"
+                          src="/DigiCris.png?height=200&width=200"
                           alt="DigiCris"
                           width={200}
                           height={200}
@@ -264,12 +264,12 @@ export default function AboutPage() {
                     </div>
                     <CardTitle className="text-filabe-text text-xl font-bold">DigiCris</CardTitle>
                     <div className="mt-1.5 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-filabe-teal/10 text-filabe-teal border border-filabe-teal/20">
-                      Team Lead
+                      Líder del Equipo
                     </div>
                   </div>
                   <div className="border-t border-filabe-lightgray/40 bg-filabe-dark/40 px-6 py-4">
                     <p className="text-center text-filabe-text/70 font-mono text-xs">
-                      Full Stack & Web3 Architect
+                      Full Stack Web 3 
                     </p>
                   </div>
                 </Card>
@@ -292,12 +292,12 @@ export default function AboutPage() {
                     </div>
                     <CardTitle className="text-filabe-text text-xl font-bold">NightmareFox12</CardTitle>
                     <div className="mt-1.5 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-filabe-teal/10 text-filabe-teal border border-filabe-teal/20">
-                      Core Developer
+                      Desarrollador
                     </div>
                   </div>
                   <div className="border-t border-filabe-lightgray/40 bg-filabe-dark/40 px-6 py-4">
                     <p className="text-center text-filabe-text/70 font-mono text-xs">
-                      Blockchain & Advanced Backend Engineer
+                      Full Stack Web 3 
                     </p>
                   </div>
                 </Card>
@@ -320,12 +320,12 @@ export default function AboutPage() {
                     </div>
                     <CardTitle className="text-filabe-text text-xl font-bold">Echizen512</CardTitle>
                     <div className="mt-1.5 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-filabe-teal/10 text-filabe-teal border border-filabe-teal/20">
-                      Core Developer
+                      Desarrollador
                     </div>
                   </div>
                   <div className="border-t border-filabe-lightgray/40 bg-filabe-dark/40 px-6 py-4">
                     <p className="text-center text-filabe-text/70 font-mono text-xs">
-                      Full Stack Dev & System Logic
+                      Full Stack Web 3 
                     </p>
                   </div>
                 </Card>
