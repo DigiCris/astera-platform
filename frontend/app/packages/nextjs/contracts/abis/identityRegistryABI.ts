@@ -1,4 +1,4 @@
-export const IdentityRegistryABI = [
+export const IDENTITY_REGISTRY_ABI = [
   {
     inputs: [
       {

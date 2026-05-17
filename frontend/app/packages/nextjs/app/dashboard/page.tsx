@@ -3,32 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Bell,
-  ChevronDown,
-  ChevronUp,
-  CreditCard,
-  DollarSign,
-  FileText,
-  HelpCircle,
-  LogOut,
-  Menu,
-  PieChart,
-  User,
-  Wallet,
-} from "lucide-react";
+import { Bell, CreditCard, DollarSign, FileText, HelpCircle, LogOut, Menu, PieChart, User, Wallet } from "lucide-react";
+import { formatUnits, parseUnits } from "viem";
+import { useAccount } from "wagmi";
+import { MainNav } from "~~/components/main-nav";
 import { Button } from "~~/components/ui/shadcn/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
 import { Sheet, SheetContent, SheetTrigger } from "~~/components/ui/shadcn/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~~/components/ui/shadcn/table";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 export default function DashboardPage() {
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [expandedProjects, setExpandedProjects] = useState<number[]>([]);
+  const { address } = useAccount();
   const notificationsRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  //states
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [expandedProjects, setExpandedProjects] = useState<number[]>([]);
+
+  const { data: userBalance } = useScaffoldReadContract({
+    contractName: "USDC",
+    functionName: "balanceOf",
+    args: [address],
+  });
 
   // Añadir un efecto para cerrar el menú al hacer clic fuera
   useEffect(() => {
@@ -60,11 +58,10 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-backdrop-filter:bg-filabe-dark/60">
+      {/* <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-backdrop-filter:bg-filabe-dark/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/favicon.png" alt="icon" className="h-16 w-16" />
               <span>ASTERA</span>
             </Link>
@@ -87,7 +84,6 @@ export default function DashboardPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            {/* Mobile Navigation Trigger */}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden text-filabe-text hover:text-filabe-teal">
@@ -99,7 +95,6 @@ export default function DashboardPage() {
                 <div className="flex h-full flex-col">
                   <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src="/favicon.png" alt="icon" className="h-16 w-16" />
                       <span className="text-xl font-bold">ASTERA</span>
                     </div>
@@ -304,7 +299,9 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+
+      <MainNav />
 
       <div className="flex flex-1">
         {/* Desktop Sidebar */}
@@ -390,16 +387,18 @@ export default function DashboardPage() {
                   <Wallet className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$3,250</div>
-                  <p className="text-xs text-muted-foreground">Fondos disponibles para retirar</p>
+                  <div className="text-2xl font-bold">
+                    {userBalance !== null && userBalance !== undefined ? formatUnits(userBalance, 8) : "Loading..."}
+                  </div>
+                  {/* <p className="text-xs text-muted-foreground">Fondos disponibles para retirar</p> */}
                 </CardContent>
-                <CardFooter>
+                {/* <CardFooter>
                   <Link href="/dashboard/retiro" className="w-full">
                     <Button variant="outline" className="w-full">
                       Retirar Fondos
                     </Button>
                   </Link>
-                </CardFooter>
+                </CardFooter> */}
               </Card>
               <Card className="">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

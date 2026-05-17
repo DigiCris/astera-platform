@@ -1,4 +1,4 @@
-export const ComplianceABI = [
+export const COMPLIANCE_ABI = [
   {
     inputs: [
       {
