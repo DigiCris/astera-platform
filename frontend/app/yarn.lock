@@ -5768,6 +5768,7 @@ __metadata:
     input-otp: ^1.4.2
     kubo-rpc-client: ^5.0.2
     lucide-react: ^1.16.0
+    motion: ^12.38.0
     next: ^15.2.3
     next-nprogress-bar: ^2.3.13
     next-themes: ^0.4.6
@@ -17851,7 +17852,6 @@ __metadata:
   dependencies:
     husky: ^9.1.6
     lint-staged: ^15.2.10
-    motion: ^12.38.0
   languageName: unknown
   linkType: soft
 

@@ -57,8 +57,5 @@
   },
   "engines": {
     "node": ">=20.18.3"
-  },
-  "dependencies": {
-    "motion": "^12.38.0"
   }
 }
