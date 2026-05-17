@@ -85,7 +85,7 @@ export const AuthWallet = () => {
 
   // CONDICIÓN DE SALIDA:
   if (isAuthorized || pathname === "/kyc") {
-    return null;
+    if (isConnected) return null;
   }
 
   return (
