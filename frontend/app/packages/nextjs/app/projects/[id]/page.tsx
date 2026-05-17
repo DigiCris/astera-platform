@@ -3,28 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Bell,
-  Building2,
-  CreditCard,
-  DollarSign,
-  FileText,
-  HelpCircle,
-  Info,
-  LogOut,
-  MapPin,
-  Menu,
-  PieChart,
-  User,
-} from "lucide-react";
+import { ArrowLeft, Building2, DollarSign, FileText, Info, MapPin } from "lucide-react";
 import { InvestmentModal } from "~~/components/investment/investment-modal";
 import { MainNav } from "~~/components/main-nav";
 import { Button } from "~~/components/ui/shadcn/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
 import { Progress } from "~~/components/ui/shadcn/progress";
 import { Separator } from "~~/components/ui/shadcn/separator";
-import { Sheet, SheetContent, SheetTrigger } from "~~/components/ui/shadcn/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~~/components/ui/shadcn/tabs";
 
 const projects = [
