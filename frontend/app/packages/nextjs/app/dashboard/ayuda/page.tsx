@@ -56,8 +56,8 @@ export default function AyudaPage() {
       <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-[backdrop-filter]:bg-filabe-dark/60">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" />
-            <span>FILABE</span>
+            <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+            <span>ASTERA</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-sm font-medium text-filabe-text">
@@ -73,7 +73,7 @@ export default function AyudaPage() {
               Nosotros
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-filabe-text">
-              Mi Inversión
+              Mi Balance
             </Link>
           </nav>
           <div className="flex items-center gap-4">
@@ -89,8 +89,8 @@ export default function AyudaPage() {
                 <div className="flex h-full flex-col">
                   <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-6 w-6 text-primary" />
-                      <span className="text-xl font-bold">FILABE</span>
+                      <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+                      <span className="text-xl font-bold">ASTERA</span>
                     </div>
                   </div>
                   <nav className="flex-1 overflow-auto py-2">
@@ -500,12 +500,12 @@ export default function AyudaPage() {
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
             <div className="text-filabe-text font-bold text-xl flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-primary" />
-              <span>FILABE</span>
+              <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+              <span>ASTERA</span>
             </div>
           </div>
           <p className="text-center text-sm text-filabe-text/70 md:text-left">
-            &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
             <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
