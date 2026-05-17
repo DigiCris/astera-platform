@@ -5,7 +5,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "../ui/shadcn/button";
 import { Card, CardContent } from "../ui/shadcn/card";
-import { Checkbox } from "../ui/shadcn/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -17,22 +16,21 @@ import {
 } from "../ui/shadcn/dialog";
 import { Input } from "../ui/shadcn/input";
 import { Label } from "../ui/shadcn/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/shadcn/tabs";
-import { ArrowLeft, ArrowRight, DollarSign, Download, FileText, Loader2, Upload, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, DollarSign, Download, FileText, Loader2, Upload } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { keccak256 } from "viem";
+import { keccak256, parseEther, parseUnits } from "viem";
 import { useAccount, useSignTypedData } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { createClient } from "~~/utils/supabase/client";
 
-// ── Constantes del contrato ─────────────────────────────────────────────
+// ── Contract constants ───────
 const GENERIC_DOCUMENT_HASH = "0x6997b5bd3d2c1b7e3812ca8741ad8183292eb39507b7433e622e2474c0fff23a" as `0x${string}`;
 const GENERIC_DOCUMENT_URI =
   "https://ivory-accessible-owl-927.mypinata.cloud/ipfs/bafkreiaycpbk6u5a2j6o7j3pwmn7qakvmgix2kt2queuiw733gqvn27kl4";
-const COMPLIANCE_ADDRESS = "0xFA129CC39d49942b1D0C4fb5587DB605B98E1Dd9" as `0x${string}`;
 const CHAIN_ID = 43114;
+const COMPLIANCE_ADDRESS = "0xFA129CC39d49942b1D0C4fb5587DB605B98E1Dd9" as `0x${string}`;
 
-// ── EIP-712 types ───────────────────────────────────────────────────────
+// ── EIP-712 types ────────
 const EIP712_TYPES = {
   AgreementAcceptance: [
     { name: "genericDocumentHash", type: "bytes32" },
@@ -54,20 +52,23 @@ interface InvestmentModalProps {
   };
 }
 
+// ── Payment step states ─────────────────────────────────────────────────
+type PaymentStatus = "idle" | "approving" | "approved" | "buying" | "done" | "error";
+
 export function InvestmentModal({ trigger, open, onOpenChange, project }: InvestmentModalProps) {
   const { address } = useAccount();
   const supabase = createClient();
 
-  // ── States ──────────────────────────────────────────────────────────
+  // ── States
   const [step, setStep] = useState(1);
   const [investmentAmount, setInvestmentAmount] = useState(project.minimumInvestment.toString());
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"bank" | "crypto">("bank");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("idle");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
-  // ── Hooks ────────────────────────────────────────────────────────────
+  // ── Hooks ──
   const { signTypedDataAsync } = useSignTypedData();
 
   const { data: isCompliant } = useScaffoldReadContract({
@@ -80,9 +81,33 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
     contractName: "AsteraComplianceManager",
   });
 
-  const totalSteps = isCompliant ? 3 : 4;
+  const { writeContractAsync: writeUSDC } = useScaffoldWriteContract({
+    contractName: "USDC",
+  });
 
-  // ── Handlers ─────────────────────────────────────────────────────────
+  const { writeContractAsync: writeExchange } = useScaffoldWriteContract({
+    contractName: "AsteraPrimaryExchange",
+  });
+
+  const totalSteps = isCompliant ? 2 : 3;
+
+  const fideicomisoStep = !isCompliant ? 1 : null;
+  const amountStep = isCompliant ? 1 : 2;
+  const paymentStep = isCompliant ? 2 : 3;
+
+  // ── Helpers ───
+  const usdcAmount = (): bigint => {
+    const amount = parseFloat(investmentAmount);
+    if (isNaN(amount)) return 0n;
+    return parseUnits(amount.toString(), 6);
+  };
+
+  const isAmountValid = () => {
+    const amount = parseFloat(investmentAmount);
+    return !isNaN(amount) && amount >= project.minimumInvestment;
+  };
+
+  // ── Handlers ──
   const handleNext = () => {
     if (step < totalSteps) setStep(step + 1);
   };
@@ -105,11 +130,9 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
     setIsSigning(true);
     try {
-      // 1. Hash keccak256 del PDF firmado
       const buffer = await file.arrayBuffer();
       const signedDocHash = keccak256(new Uint8Array(buffer)) as `0x${string}`;
 
-      // 2. Firma EIP-712
       toast.loading("Firmando con tu wallet...", { id: "sign" });
       const signature = await signTypedDataAsync({
         domain: {
@@ -129,7 +152,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
       });
       toast.success("Firma EIP-712 obtenida ✓", { id: "sign" });
 
-      // 3. Subir PDF a Supabase Storage
       const walletLower = address.toLowerCase();
       const filePath = `${walletLower}/signed_agreement.pdf`;
 
@@ -149,7 +171,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
       }
       toast.success("PDF subido ✓");
 
-      // 4. Llamar al smart contract
       toast.loading("Enviando transacción...", { id: "tx" });
       await writeComplianceManager({
         functionName: "acceptTermsAndJoin",
@@ -157,7 +178,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
       });
       toast.success("¡Adhesión confirmada on-chain! ✓", { id: "tx" });
 
-      // 5. Actualizar UI local
       setProofFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setProofPreview(reader.result as string);
@@ -165,24 +185,65 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
     } catch (err: any) {
       console.error(err);
       toast.error(`Error: ${err.message}`, { id: "sign" });
-      // Limpiar input para permitir re-intentar
       e.target.value = "";
     } finally {
       setIsSigning(false);
     }
   };
 
+  /**
+   * Two-step payment:
+   * 1. USDC.approve(EXCHANGE_ADDRESS, amount)
+   * 2. Exchange.buy(tokenAddress, amount)
+   */
+  const handlePayment = async () => {
+    if (!address || !project.id) return;
+    setPaymentError(null);
+    const amount = usdcAmount();
+    if (amount === 0n) return;
+    try {
+      const exchangeAddress = "0x640C0638703D18B0d5B878606224FC3a592E92D6";
+
+      // ── Step 1: Approve ──────────────────────────────────────────
+      setPaymentStatus("approving");
+      toast.loading("Aprobando USDC...", { id: "payment" });
+
+      await writeUSDC({
+        functionName: "approve",
+        // Usamos 'amount' directamente porque ya es el BigInt que espera el contrato
+        args: [exchangeAddress, amount],
+      });
+
+      toast.success("USDC aprobado ✓", { id: "payment" });
+      setPaymentStatus("approved");
+
+      // ── Step 2: Buy ──────────────────────────────────────────────
+      setPaymentStatus("buying");
+      toast.loading("Ejecutando inversión...", { id: "payment" });
+
+      await writeExchange({
+        functionName: "buy",
+        // Aquí también pasamos 'amount' directo
+        args: [exchangeAddress, amount],
+      });
+
+      toast.success("¡Inversión completada! ✓", { id: "payment" });
+      setPaymentStatus("done");
+    } catch (err: any) {
+      console.error(err);
+      const msg = err?.shortMessage ?? err?.message ?? "Error desconocido";
+      setPaymentError(msg);
+      setPaymentStatus("error");
+      toast.error(`Error: ${msg}`, { id: "payment" });
+    }
+  };
+
   const handleSubmit = () => {
-    console.log({ projectId: project.id, investmentAmount, acceptedTerms, paymentMethod, proofFile });
     onOpenChange?.(false);
     window.location.href = "/dashboard";
   };
 
-  const isAmountValid = () => {
-    const amount = Number.parseFloat(investmentAmount);
-    return !isNaN(amount) && amount >= project.minimumInvestment;
-  };
-
+  // ── Step indicator ───────────────────────────────────────────────────
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center space-x-2 mb-6">
       {Array.from({ length: totalSteps }).map((_, index) => (
@@ -196,10 +257,25 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
     </div>
   );
 
-  // ── El step del fideicomiso se muestra cuando NO es compliant ────────
-  const fideicomisoStep = !isCompliant ? 1 : null; // step 1 si no es compliant
-  const amountStep = isCompliant ? 1 : 2;
-  const paymentStep = isCompliant ? 3 : 4;
+  // ── Payment UI helpers ────────────────────────────────────────────────
+  const paymentIdle = paymentStatus === "idle" || paymentStatus === "error";
+  const paymentInProgress = paymentStatus === "approving" || paymentStatus === "buying";
+  const paymentDone = paymentStatus === "done";
+
+  const paymentButtonLabel = () => {
+    switch (paymentStatus) {
+      case "approving":
+        return "Aprobando USDC...";
+      case "approved":
+        return "Aprobado — ejecutando...";
+      case "buying":
+        return "Procesando inversión...";
+      case "done":
+        return "¡Completado!";
+      default:
+        return `Invertir ${investmentAmount} USDC`;
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -220,9 +296,8 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
             <div className="flex justify-center">
               <Button
                 onClick={async () => {
-                  const pdfUrl = GENERIC_DOCUMENT_URI;
                   try {
-                    const response = await fetch(pdfUrl);
+                    const response = await fetch(GENERIC_DOCUMENT_URI);
                     if (!response.ok) throw new Error("Error al descargar");
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
@@ -234,7 +309,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                     a.remove();
                     window.URL.revokeObjectURL(url);
                   } catch {
-                    window.open(pdfUrl, "_blank");
+                    window.open(GENERIC_DOCUMENT_URI, "_blank");
                   }
                 }}
               >
@@ -247,13 +322,11 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
             <div className="mt-2 rounded-lg border border-dashed border-filabe-lightgray transition-colors hover:bg-filabe-dark/20">
               {isSigning ? (
-                /* Estado: procesando firma + subida */
                 <div className="flex flex-col items-center justify-center p-8 space-y-3">
                   <Loader2 className="h-10 w-10 text-filabe-teal animate-spin" />
                   <p className="text-sm text-filabe-text/70">Procesando firma y subida...</p>
                 </div>
               ) : proofPreview ? (
-                /* Estado: archivo listo */
                 <div className="flex flex-col items-center justify-center p-8 space-y-4 w-full">
                   <div className="relative h-40 w-full overflow-hidden rounded-lg">
                     <div className="flex flex-col items-center justify-center h-full w-full bg-filabe-dark/40 rounded-lg text-filabe-text/80">
@@ -275,7 +348,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                   </Button>
                 </div>
               ) : (
-                /* Estado: esperando archivo */
                 <label
                   htmlFor="proof-upload"
                   className="flex flex-col items-center justify-center p-8 cursor-pointer w-full text-center group"
@@ -310,7 +382,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
               <div>
                 <h3 className="font-medium text-filabe-text">{project.title}</h3>
                 <p className="text-sm text-filabe-text/70">
-                  Inversión mínima: ${project.minimumInvestment.toLocaleString()}
+                  Inversión mínima: ${project.minimumInvestment.toLocaleString()} USDC
                 </p>
               </div>
             </div>
@@ -363,40 +435,110 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
         {/* ── STEP PAGO ── */}
         {step === paymentStep && (
           <div className="space-y-4 py-2">
+            <Label className="text-filabe-text">Pago con USDC</Label>
+
+            {/* Amount summary */}
+            <Card className="bg-filabe-dark border-filabe-lightgray">
+              <CardContent className="p-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-filabe-text/70">Monto a invertir</span>
+                  <span className="font-medium text-filabe-text">
+                    {parseFloat(investmentAmount).toLocaleString()} USDC
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-filabe-text/70">Red</span>
+                  <span className="font-medium text-filabe-text">Avalanche C-Chain</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-filabe-text/70">Token</span>
+                  <span className="font-mono text-xs text-filabe-text/70">{project.id}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Flow steps indicator */}
             <div className="space-y-2">
-              <Label className="text-filabe-text">Seleccionar Método de Pago</Label>
-              <Tabs defaultValue="crypto" onValueChange={v => setPaymentMethod(v as "bank" | "crypto")}>
-                <TabsList className="grid w-full grid-cols-1 bg-filabe-dark">
-                  <TabsTrigger
-                    value="crypto"
-                    className="data-[state=active]:bg-filabe-teal data-[state=active]:text-filabe-dark w-full"
-                  >
-                    Criptomoneda
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="crypto" className="space-y-4 pt-4">
-                  <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
-                    <h3 className="font-medium mb-2 flex items-center text-filabe-text">
-                      <Wallet className="h-4 w-4 mr-2 text-filabe-teal" /> Detalles de Pago
-                    </h3>
-                    <div className="space-y-3 text-sm">
-                      <div className="space-y-1">
-                        <span className="text-filabe-text/70">Dirección USDT:</span>
-                        <div className="p-2 bg-filabe-gray rounded border border-filabe-lightgray break-all font-mono text-xs text-filabe-text">
-                          0x8fC9f05f7B21346FD5DE4Cef36D75f99a07156F5
-                        </div>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-filabe-text/70">Referencia:</span>
-                        <span className="font-medium text-filabe-text">
-                          INV-{project.id}-{Math.floor(Math.random() * 10000)}
-                        </span>
-                      </div>
+              {/* Step 1: Approve */}
+              <div
+                className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                  paymentStatus === "approving"
+                    ? "border-filabe-teal bg-filabe-teal/10"
+                    : paymentStatus === "approved" || paymentStatus === "buying" || paymentStatus === "done"
+                      ? "border-filabe-teal/40 bg-filabe-dark"
+                      : "border-filabe-lightgray bg-filabe-dark"
+                }`}
+              >
+                <div className="shrink-0">
+                  {paymentStatus === "approving" ? (
+                    <Loader2 className="h-5 w-5 text-filabe-teal animate-spin" />
+                  ) : paymentStatus === "approved" || paymentStatus === "buying" || paymentStatus === "done" ? (
+                    <CheckCircle2 className="h-5 w-5 text-filabe-teal" />
+                  ) : (
+                    <div className="h-5 w-5 rounded-full border-2 border-filabe-lightgray flex items-center justify-center">
+                      <span className="text-xs text-filabe-text/50">1</span>
                     </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-filabe-text">Aprobar USDC</p>
+                  <p className="text-xs text-filabe-text/60">
+                    Autoriza al contrato Exchange a gastar {parseFloat(investmentAmount).toLocaleString()} USDC
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2: Buy */}
+              <div
+                className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                  paymentStatus === "buying"
+                    ? "border-filabe-teal bg-filabe-teal/10"
+                    : paymentStatus === "done"
+                      ? "border-filabe-teal/40 bg-filabe-dark"
+                      : "border-filabe-lightgray bg-filabe-dark"
+                }`}
+              >
+                <div className="shrink-0">
+                  {paymentStatus === "buying" ? (
+                    <Loader2 className="h-5 w-5 text-filabe-teal animate-spin" />
+                  ) : paymentStatus === "done" ? (
+                    <CheckCircle2 className="h-5 w-5 text-filabe-teal" />
+                  ) : (
+                    <div className="h-5 w-5 rounded-full border-2 border-filabe-lightgray flex items-center justify-center">
+                      <span className="text-xs text-filabe-text/50">2</span>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-filabe-text">Confirmar Inversión</p>
+                  <p className="text-xs text-filabe-text/60">
+                    Llama a <code className="text-filabe-teal">Exchange.buy(token, amount)</code> on-chain
+                  </p>
+                </div>
+              </div>
             </div>
+
+            {/* Error */}
+            {paymentStatus === "error" && paymentError && (
+              <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{paymentError}</p>
+            )}
+
+            {/* Main CTA */}
+            {!paymentDone ? (
+              <Button
+                className="w-full bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
+                disabled={paymentInProgress || !isAmountValid() || !project.id}
+                onClick={handlePayment}
+              >
+                {paymentInProgress && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {paymentButtonLabel()}
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2 justify-center p-3 bg-filabe-teal/10 rounded-lg border border-filabe-teal/40">
+                <CheckCircle2 className="h-5 w-5 text-filabe-teal" />
+                <p className="text-sm font-medium text-filabe-teal">Inversión confirmada on-chain</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -405,6 +547,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
             <Button
               variant="outline"
               onClick={handleBack}
+              disabled={paymentInProgress}
               className="border-filabe-lightgray text-filabe-text hover:bg-filabe-dark"
             >
               <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
@@ -417,16 +560,18 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
             <Button
               onClick={handleNext}
               disabled={
-                (step === fideicomisoStep && !proofFile) || // 👈 bloquea si no firmó el fideicomiso
-                (step === amountStep && !isAmountValid()) ||
-                isSigning
+                (step === fideicomisoStep && !proofFile) || (step === amountStep && !isAmountValid()) || isSigning
               }
               className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
             >
               Siguiente <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
+            <Button
+              onClick={handleSubmit}
+              disabled={!paymentDone}
+              className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
+            >
               Completar Inversión
             </Button>
           )}

@@ -1,3 +1,4 @@
+import { ASTERA_PRIMARY_EXCHANGE_ABI } from "./abis/asteraPrimaryExchangeABI";
 import { COMPLIANCE_ABI } from "./abis/complianceABI";
 import { IDENTITY_REGISTRY_ABI } from "./abis/identityRegistryABI";
 import { USDC_ABI } from "./abis/usdcABI";
@@ -27,6 +28,10 @@ const externalContracts = {
     USDC: {
       address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       abi: USDC_ABI,
+    },
+    AsteraPrimaryExchange: {
+      address: "0x89B2b2FE6fC68a865A258c2C99adaCF5aF4c5A35",
+      abi: ASTERA_PRIMARY_EXCHANGE_ABI,
     },
   },
 } as const;
