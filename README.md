@@ -23,7 +23,7 @@ White-label infrastructure for regulated real-world asset tokenization platforms
 | Interactive Pitch Deck | [./pitch_slides.html](./pitch_slides.html) |
 | Pitch Deck PDF | [./Astera_Pitch_Deck.pdf](./Astera_Pitch_Deck.pdf) |
 | Prototype / early contracts proof-of-concept video | https://youtu.be/AKxAs7N9Rr8 |
-| Final pitch/demo video | PENDING — replace this line when final video is ready |
+| Final pitch/demo video | https://youtu.be/BzrINv-UP9g |
 | Smart contracts docs | [./contracts/docs/](./contracts/docs/) |
 | Address book / deployments | [./contracts/docs/ADDRESS_BOOK.md](./contracts/docs/ADDRESS_BOOK.md) |
 | Network | Avalanche C-Chain mainnet |
