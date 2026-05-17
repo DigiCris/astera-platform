@@ -279,7 +279,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                       <h3 className="font-medium">Notificaciones</h3>
                     </div>
 
-                    <div className="max-h-[400px] overflow-auto">
+                    <div className="max-h-100 overflow-auto">
                       <div className="p-4 cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-b">
                         <div className="flex flex-col gap-1 w-full">
                           <div className="flex items-center justify-between">
@@ -364,7 +364,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
 
-              <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+              <div className="relative aspect-video overflow-hidden rounded-lg">
                 <Image
                   src={project.images[0] || "/placeholder.svg"}
                   alt={project.title}
