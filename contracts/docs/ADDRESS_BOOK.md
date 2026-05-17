@@ -39,11 +39,18 @@
 
 ## Deployed Tokens
 
-> One entry per project token created via `createProjectToken`. Fill in after `DeployToken.s.sol`.
+> One entry per project token created via `createProjectToken`.
 
-| Project | `AsteraToken` | `AsteraComplianceManager` | Treasury | Status |
-|---------|--------------|--------------------------|---------|--------|
-| (none yet) | — | — | — | — |
+### Astera Real Estate I (AREI)
+
+| Item | Address | Type | Status |
+|------|---------|------|--------|
+| `AsteraToken` (AREI) | `0x640C0638703D18B0d5B878606224FC3a592E92D6` | Contract | **Demo / Hackathon** |
+| `AsteraComplianceManager` (AREI) | `0xFA129CC39d49942b1D0C4fb5587DB605B98E1Dd9` | Contract | **Demo / Hackathon** |
+| Fideicomiso / treasury wallet | `0xd22077414e8859BA08723fEC0ac54D0365346D1e` | EOA wallet | See Operational Addresses |
+
+Deploy tx: `0x8b72cccb31d29c133f5153a1f6398937cd920d6db5c31ec586915afdce5155fa` — deployed 2026-05-16.
+Full deploy record: [`contracts/docs/tokenDeployments/16_05_26_AREI.json`](tokenDeployments/16_05_26_AREI.json)
 
 ---
 

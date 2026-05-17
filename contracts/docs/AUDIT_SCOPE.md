@@ -1,6 +1,8 @@
 # Audit Scope
 
-Audit commit/tag: TBD
+Hackathon submission tag: `hackathon-submission-v1`
+
+> This document represents the audit-friendly scope for the hackathon submission. It is not a formal security audit.
 
 ---
 

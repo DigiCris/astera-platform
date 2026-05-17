@@ -15,6 +15,7 @@ Technical, architectural, audit, and operational documentation for Astera regula
 | [`TESTING.md`](TESTING.md) | Test suite structure, coverage areas, and known gaps |
 | [`INVARIANTS.md`](INVARIANTS.md) | Protocol invariants, test status, and off-chain dependencies |
 | [`THREAT_MODEL.md`](THREAT_MODEL.md) | Threat scenarios, impact analysis, and mitigations |
+| [`BACKEND_SERVICES.md`](BACKEND_SERVICES.md) | Backend services specification: KYC, document management, event indexing, admin APIs |
 
 ## Platform Overview
 

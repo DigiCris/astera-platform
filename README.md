@@ -14,6 +14,32 @@ White-label infrastructure for regulated real-world asset tokenization platforms
 
 ---
 
+## Hackathon Submission — Judge Links
+
+| Resource | Link |
+|----------|------|
+| Landing | https://comunyt.co/ |
+| Live Demo | https://astera-frontend.vercel.app/ |
+| Interactive Pitch Deck | [./pitch_slides.html](./pitch_slides.html) |
+| Pitch Deck PDF | [./Astera_Pitch_Deck.pdf](./Astera_Pitch_Deck.pdf) |
+| Prototype / early contracts proof-of-concept video | https://youtu.be/AKxAs7N9Rr8 |
+| Final pitch/demo video | PENDING — replace this line when final video is ready |
+| Smart contracts docs | [./contracts/docs/](./contracts/docs/) |
+| Address book / deployments | [./contracts/docs/ADDRESS_BOOK.md](./contracts/docs/ADDRESS_BOOK.md) |
+| Network | Avalanche C-Chain mainnet |
+
+> The prototype video above is an **early proof of concept** of the contracts and platform flow. It is not the final demo.
+
+### Recommended Judge Walkthrough
+
+1. Watch the prototype video to understand the on-chain flow.
+2. Open the landing at https://comunyt.co/ for the institutional overview.
+3. Open the live demo at https://astera-frontend.vercel.app/ and explore the regulated marketplace.
+4. Review the pitch deck (HTML or PDF) for business model, team, and roadmap.
+5. Check deployed contracts and technical documentation in `./contracts/docs/`.
+
+---
+
 ## Architecture
 
 ![Astera Architecture](assets/architecture.png)
@@ -86,7 +112,15 @@ Immutable on-chain event emissions across all contracts for KYC, purchases, orde
 
 ## Backend & Services Layer
 
-Astera is not only smart contracts. The platform includes a backend services layer responsible for:
+The current demo backend runs on **Next.js + Supabase** (see `frontend/app/`). There is no separate standalone backend server in this repository.
+
+The full production backend services specification is documented in [`docs/BACKEND_SERVICES.md`](docs/BACKEND_SERVICES.md).
+
+**Demo (current):** Next.js API routes + Supabase for off-chain data, KYC records, document metadata, and auth.
+
+**Production services (future):** dedicated KYC provider, on-chain event indexer, document storage (IPFS/S3), compliance notification webhooks, and audit log service.
+
+The backend services layer is responsible for:
 
 - **KYC orchestration** — off-chain identity verification integrated with on-chain wallet registration
 - **Document management** — PDF generation, IPFS upload, holographic signature capture, and hash calculation
@@ -95,19 +129,6 @@ Astera is not only smart contracts. The platform includes a backend services lay
 - **Compliance workflows** — freeze/unfreeze management, forced transfer monitoring, and alert generation
 - **Notifications** — webhook delivery for key events: KYC, purchases, funding close, compliance changes
 - **Audit logs** — off-chain record of sensitive admin actions paired with on-chain event evidence
-
-Backend API surface (reference):
-
-```
-POST   /api/kyc/start
-GET    /api/kyc/status/:wallet
-POST   /api/admin/users/register
-GET    /api/projects
-POST   /api/projects
-POST   /api/documents/signed
-GET    /api/events
-GET    /api/admin/audit
-```
 
 ---
 
@@ -195,12 +216,14 @@ Potential L1 use cases:
 ## Repository Structure
 
 ```txt
-frontend/     Landing (institutional) + App (reference implementation)
-backend/      KYC, document management, event indexing, admin APIs, compliance workflows
-contracts/    Smart contracts and protocol logic
-docs/         Technical documentation, audit materials, architecture
+frontend/     Landing (institutional) + App (reference implementation — Next.js + Supabase)
+contracts/    Smart contracts and protocol logic (Foundry — source of truth for all contracts)
+docs/         Technical documentation, audit materials, architecture, backend services spec
 assets/       Architecture diagrams, branding, visual assets
+SUBMISSION.md Hackathon submission summary with all links and feature overview
 ```
+
+> `frontend/app/` uses Scaffold-ETH 2 tooling for wallet/web3 UX. The smart contract source of truth is `/contracts` (Foundry). The Hardhat package in `frontend/app/packages/hardhat/` is retained for Scaffold-ETH dev tooling only and is not the source of the deployed contracts.
 
 ---
 

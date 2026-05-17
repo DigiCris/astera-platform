@@ -1,6 +1,12 @@
-# Backend — Astera Finance
+# Backend Services — Astera Finance
 
 Off-chain services layer for regulated tokenization operations.
+
+**Current demo:** Next.js + Supabase (see `frontend/app/`). There is no standalone backend server in this repository. The Next.js app handles KYC records, document metadata, and auth via Supabase.
+
+**Production services (future):** the responsibilities below describe the full production backend surface planned for regulated deployments.
+
+---
 
 ## Responsibilities
 
@@ -13,6 +19,8 @@ Off-chain services layer for regulated tokenization operations.
 | Compliance workflows | Freeze/unfreeze management, forced transfer monitoring, anomaly alerting |
 | Notifications | Webhook delivery for key events: KYC completion, purchases, funding close, compliance changes |
 | Audit logs | Off-chain record of sensitive admin actions paired with on-chain event evidence |
+
+---
 
 ## API Surface (Reference)
 
@@ -30,6 +38,8 @@ GET    /api/events
 GET    /api/admin/audit
 ```
 
+---
+
 ## Key Events Indexed
 
 From `AsteraIdentityRegistry`: `UserRegistered`, `UserRemoved`, `YearlyLimitUpdated`, `YearlyCycleReset`
@@ -39,6 +49,8 @@ From `AsteraPrimaryExchange`: `ProjectTokenCreated`, `BuyExecuted`, `FeeRecipien
 From `AsteraSecondaryExchange`: `SellOrderCreated`, `SellOrderFilled`, `SellOrderCancelled`, `FeeCollected`
 
 From `AsteraComplianceManager`: `TermsAccepted`, `AdminForceCompliant`, `Frozen`, `Unfrozen`, `FundingCompleted`
+
+---
 
 ## Critical Alerts
 
