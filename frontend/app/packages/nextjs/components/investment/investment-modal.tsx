@@ -18,7 +18,7 @@ import { Input } from "../ui/shadcn/input";
 import { Label } from "../ui/shadcn/label";
 import { ArrowLeft, ArrowRight, CheckCircle2, DollarSign, Download, FileText, Loader2, Upload } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { keccak256, parseEther, parseUnits } from "viem";
+import { keccak256, parseUnits } from "viem";
 import { useAccount, useSignTypedData } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { createClient } from "~~/utils/supabase/client";
@@ -258,7 +258,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
   );
 
   // ── Payment UI helpers ────────────────────────────────────────────────
-  const paymentIdle = paymentStatus === "idle" || paymentStatus === "error";
   const paymentInProgress = paymentStatus === "approving" || paymentStatus === "buying";
   const paymentDone = paymentStatus === "done";
 
