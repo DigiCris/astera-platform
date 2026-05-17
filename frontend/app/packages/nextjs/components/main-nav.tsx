@@ -29,9 +29,9 @@ export function MainNav({ showAuthButtons = true, onLoginClick, onSignUpClick, a
   const navLinks = [
     { href: "/", label: "Inicio" },
     { href: "/projects", label: "Proyectos" },
-    { href: "/how-it-works", label: "Cómo Funciona" },
+    { href: "/how-it-works", label: "¿Cómo Funciona?" },
     { href: "/about", label: "Nosotros" },
-    { href: "/dashboard", label: "Mi Inversión" },
+    { href: "/dashboard", label: "Mi Balance" },
   ];
 
   return (
@@ -42,8 +42,8 @@ export function MainNav({ showAuthButtons = true, onLoginClick, onSignUpClick, a
       >
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2 z-[110]">
-            <Building2 className="h-6 w-6 text-primary" />
-            <span>FIDUCHAIN</span>
+            <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+            <span>ASTERA</span>
           </Link>
 
           {/* Mobile menu button */}

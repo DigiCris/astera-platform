@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Building2, Mail, MapPin, Phone } from "lucide-react"
+import { Cpu, Building2, Mail, MapPin, Phone } from "lucide-react"
 import { Button } from "~~/components/ui/shadcn/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~~/components/ui/shadcn/card"
 import { Input } from "~~/components/ui/shadcn/input"
@@ -23,7 +23,7 @@ export default function ContactPage() {
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
             <Building2 className="h-6 w-6 text-filabe-teal" />
-            <span>FILABE</span>
+            <span>ASTERA </span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-sm font-medium text-filabe-text">
@@ -39,7 +39,7 @@ export default function ContactPage() {
               Nosotros
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-filabe-text">
-              Mi Inversión
+              Mi Balance
             </Link>
           </nav>
           <div className="flex items-center gap-4">
@@ -309,11 +309,11 @@ export default function ContactPage() {
       <footer className="bg-filabe-dark border-t border-filabe-lightgray py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-filabe-teal" />
-            <span className="text-xl font-bold text-filabe-text">FILABE</span>
+            <Cpu className="h-5 w-5 text-filabe-teal" />
+            <span className="text-xl font-bold text-filabe-text">ASTERA</span>
           </div>
           <p className="text-center text-sm text-filabe-text/70 md:text-left">
-            &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
             <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">

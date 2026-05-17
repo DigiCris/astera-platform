@@ -18,8 +18,8 @@ export default function PrivacyPage() {
       <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-[backdrop-filter]:bg-filabe-dark/60">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-filabe-teal" />
-            <span>FILABE</span>
+            <img src="/favicon.png" alt="icon" className="h-16 w-16"/>
+            <span>ASTERA</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-sm font-medium text-filabe-text">
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
               Nosotros
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-filabe-text">
-              Mi Inversión
+              Mi Balance
             </Link>
           </nav>
           <div className="flex items-center gap-4">

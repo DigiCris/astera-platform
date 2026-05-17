@@ -1,37 +1,31 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import {
-  ArrowUpRight,
-  Bell,
-  Building2,
-  CreditCard,
-  DollarSign,
-  FileText,
-  HelpCircle,
-  LineChart,
-  LogOut,
-  Menu,
-  PieChart,
-  User,
-  Wallet,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react"
-
-import { Button } from "~~/components/ui/shadcn/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~~/components/ui/shadcn/card"
-import { Sheet, SheetContent, SheetTrigger } from "~~/components/ui/shadcn/sheet"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~~/components/ui/shadcn/table"
-import { useState, useRef, useEffect } from "react"
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { DollarSign, Wallet } from "lucide-react";
+import { formatUnits } from "viem";
+import { useAccount } from "wagmi";
+import { MainNav } from "~~/components/main-nav";
+import { Button } from "~~/components/ui/shadcn/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~~/components/ui/shadcn/table";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 export default function DashboardPage() {
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [expandedProjects, setExpandedProjects] = useState<number[]>([])
-  const notificationsRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const { address } = useAccount();
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  //states
+  const [, setNotificationsOpen] = useState(false);
+  const [expandedProjects, setExpandedProjects] = useState<number[]>([]);
+
+  const { data: userBalance } = useScaffoldReadContract({
+    contractName: "USDC",
+    functionName: "balanceOf",
+    args: [address],
+  });
 
   // Añadir un efecto para cerrar el menú al hacer clic fuera
   useEffect(() => {
@@ -42,33 +36,33 @@ export default function DashboardPage() {
         !notificationsRef.current.contains(event.target as Node) &&
         !buttonRef.current.contains(event.target as Node)
       ) {
-        setNotificationsOpen(false)
+        setNotificationsOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleProjectExpand = (projectId: number) => {
-    setExpandedProjects((prev) =>
-      prev.includes(projectId) ? prev.filter((id) => id !== projectId) : [...prev, projectId],
-    )
-  }
+    setExpandedProjects(prev =>
+      prev.includes(projectId) ? prev.filter(id => id !== projectId) : [...prev, projectId],
+    );
+  };
 
-  const isProjectExpanded = (projectId: number) => expandedProjects.includes(projectId)
+  const isProjectExpanded = (projectId: number) => expandedProjects.includes(projectId);
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-[backdrop-filter]:bg-filabe-dark/60">
+      {/* <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-backdrop-filter:bg-filabe-dark/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="text-filabe-text font-bold text-xl flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-primary" />
-              <span>FILABE</span>
+              <img src="/favicon.png" alt="icon" className="h-16 w-16" />
+              <span>ASTERA</span>
             </Link>
           </div>
           <nav className="hidden md:flex items-center gap-6">
@@ -85,11 +79,10 @@ export default function DashboardPage() {
               Nosotros
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-filabe-text">
-              Mi Inversión
+              Mi Balance
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            {/* Mobile Navigation Trigger */}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden text-filabe-text hover:text-filabe-teal">
@@ -101,13 +94,11 @@ export default function DashboardPage() {
                 <div className="flex h-full flex-col">
                   <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-6 w-6 text-primary" />
-                      <span className="text-xl font-bold">FILABE</span>
+                      <img src="/favicon.png" alt="icon" className="h-16 w-16" />
+                      <span className="text-xl font-bold">ASTERA</span>
                     </div>
                   </div>
                   <nav className="flex-1 overflow-auto py-2">
-
-
                     <div className="px-4 py-2">
                       <h2 className="mb-2 px-2 text-xs font-semibold tracking-tight">Principal</h2>
                       <div className="space-y-1">
@@ -141,8 +132,6 @@ export default function DashboardPage() {
                         </Link>
                       </div>
                     </div>
-
-
 
                     <div className="px-4 py-2">
                       <h2 className="mb-2 px-2 text-xs font-semibold tracking-tight">Dashboard</h2>
@@ -232,7 +221,7 @@ export default function DashboardPage() {
                     <h3 className="font-medium">Notificaciones</h3>
                   </div>
 
-                  <div className="max-h-[400px] overflow-auto">
+                  <div className="max-h-100 overflow-auto">
                     <div className="p-4 cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-b">
                       <div className="flex flex-col gap-1 w-full">
                         <div className="flex items-center justify-between">
@@ -240,7 +229,7 @@ export default function DashboardPage() {
                           <span className="text-xs text-muted-foreground">Hace 2 horas</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          El proyecto "Terrazas Brown" ya está disponible para inversión.
+                          El proyecto &quot;Terrazas Brown&quot; ya está disponible para inversión.
                         </p>
                       </div>
                     </div>
@@ -252,7 +241,7 @@ export default function DashboardPage() {
                           <span className="text-xs text-muted-foreground">Hace 1 día</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          El proyecto "Terrazas Diez" ha alcanzado el 75% de su objetivo de financiación.
+                          El proyecto &quot;Terrazas Diez&quot; ha alcanzado el 75% de su objetivo de financiación.
                         </p>
                       </div>
                     </div>
@@ -264,7 +253,8 @@ export default function DashboardPage() {
                           <span className="text-xs text-muted-foreground">Hace 3 días</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Se ha realizado una distribución de rendimientos para el proyecto "Arenas Villarobles".
+                          Se ha realizado una distribución de rendimientos para el proyecto &quot;Arenas
+                          Villarobles&quot;.
                         </p>
                       </div>
                     </div>
@@ -276,7 +266,7 @@ export default function DashboardPage() {
                           <span className="text-xs text-muted-foreground">Hace 4 días</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Se ha añadido un nuevo documento a tu perfil: "Contrato de inversión - Magnolias".
+                          Se ha añadido un nuevo documento a tu perfil: &quot;Contrato de inversión - Magnolias&quot;.
                         </p>
                       </div>
                     </div>
@@ -308,11 +298,13 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+
+      <MainNav />
 
       <div className="flex flex-1">
         {/* Desktop Sidebar */}
-        <div className="hidden border-r bg-muted/40 md:block md:w-64 lg:w-72">
+        {/* <div className="hidden border-r bg-muted/40 md:block md:w-64 lg:w-72">
           <div className="flex h-full flex-col">
             <nav className="flex-1 overflow-auto py-6">
               <div className="px-4 py-2">
@@ -377,7 +369,7 @@ export default function DashboardPage() {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Main Content */}
         <div className="flex-1">
@@ -387,42 +379,32 @@ export default function DashboardPage() {
             </div>
 
             {/* Saldo Disponible */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card className="md:col-span-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+              <Card className="">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Saldo Disponible</CardTitle>
                   <Wallet className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$3,250</div>
-                  <p className="text-xs text-muted-foreground">Fondos disponibles para retirar</p>
+                  <div className="text-2xl font-bold">
+                    {userBalance !== null && userBalance !== undefined
+                      ? (() => {
+                          const value = Number(formatUnits(userBalance, 8));
+                          return value > 0 && value < 0.01 ? value.toFixed(5) : value.toFixed(2);
+                        })()
+                      : "Loading..."}
+                    &nbsp; USDC
+                  </div>
                 </CardContent>
-                <CardFooter>
-                  <Link href="/dashboard/retiro" className="w-full">
-                    <Button variant="outline" className="w-full">
-                      Retirar Fondos
-                    </Button>
-                  </Link>
-                </CardFooter>
               </Card>
-              <Card>
+              <Card className="">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Invertido</CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$24,500</div>
+                  <div className="text-2xl font-bold">$1</div>
                   <p className="text-xs text-muted-foreground">+12.5% desde el mes pasado</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Valor Actual</CardTitle>
-                  <LineChart className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$28,350</div>
-                  <p className="text-xs text-muted-foreground">+15.7% retorno de inversión</p>
                 </CardContent>
               </Card>
             </div>
@@ -442,12 +424,12 @@ export default function DashboardPage() {
                         <TableHead>Tokens Totales</TableHead>
                         <TableHead>Valor por Token</TableHead>
                         <TableHead>Valor Total</TableHead>
-                        <TableHead>Rendimiento</TableHead>
-                        <TableHead className="text-right">Acciones</TableHead>
+                        {/* <TableHead>Rendimiento</TableHead> */}
+                        <TableHead className="text-center">Acciones</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {tokensByProject.map((project) => (
+                      {tokensByProject.map(project => (
                         <TableRow key={project.id}>
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
@@ -474,19 +456,17 @@ export default function DashboardPage() {
                           </TableCell>
                           <TableCell>${project.valuePerToken}</TableCell>
                           <TableCell>${(project.totalTokens * project.valuePerToken).toLocaleString()}</TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             <span
                               className={`${project.performance >= 0 ? "text-green-600" : "text-red-600"} font-medium`}
                             >
                               {project.performance >= 0 ? "+" : ""}
                               {project.performance}%
                             </span>
-                          </TableCell>
-                          <TableCell className="text-right">
+                          </TableCell> */}
+                          <TableCell className="text-center">
                             <Link href={`/projects/${project.id}`}>
-                              <Button variant="ghost" size="sm">
-                                Ver Detalles
-                              </Button>
+                              <Button size="sm">Ver Detalles</Button>
                             </Link>
                           </TableCell>
                         </TableRow>
@@ -503,7 +483,7 @@ export default function DashboardPage() {
                 <h2 className="text-xl font-semibold">Mis Tokens por Proyecto</h2>
               </div>
 
-              {tokensByProject.map((project) => (
+              {tokensByProject.map(project => (
                 <Card key={project.id} className="overflow-hidden">
                   <div
                     className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
@@ -523,7 +503,7 @@ export default function DashboardPage() {
                         <p className="text-sm text-muted-foreground">{project.totalTokens} tokens</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    {/* <div className="flex items-center gap-3">
                       <span className={`${project.performance >= 0 ? "text-green-600" : "text-red-600"} font-medium`}>
                         {project.performance >= 0 ? "+" : ""}
                         {project.performance}%
@@ -533,7 +513,7 @@ export default function DashboardPage() {
                       ) : (
                         <ChevronDown className="h-5 w-5 text-muted-foreground" />
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
                   {isProjectExpanded(project.id) && (
@@ -579,7 +559,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Últimos Movimientos */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Últimos Movimientos</h2>
                 <Link href="/dashboard/movimientos" className="text-sm text-primary hover:underline flex items-center">
@@ -589,7 +569,7 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="space-y-4">
-                    {transactions.slice(0, 3).map((transaction) => (
+                    {transactions.slice(0, 3).map(transaction => (
                       <div key={transaction.id} className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div
@@ -634,7 +614,7 @@ export default function DashboardPage() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            </div> */}
           </main>
         </div>
       </div>
@@ -644,12 +624,13 @@ export default function DashboardPage() {
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
             <div className="text-filabe-text font-bold text-xl flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-primary" />
-              <span>FILABE</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/favicon.png" alt="icon" className="h-16 w-16" />
+              <span>ASTERA</span>
             </div>
           </div>
           <p className="text-center text-sm text-filabe-text/70 md:text-left">
-            &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
           <div className="flex gap-4">
             <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
@@ -665,7 +646,7 @@ export default function DashboardPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 // Datos de tokens por proyecto
@@ -677,7 +658,6 @@ const tokensByProject = [
     type: "Residencial",
     totalTokens: 500,
     valuePerToken: 11.5,
-    performance: 15,
     image: "/placeholder.svg?height=32&width=32",
     transactions: [
       { date: "15 Enero, 2023", amount: 300 },
@@ -691,7 +671,6 @@ const tokensByProject = [
     type: "Residencial",
     totalTokens: 1000,
     valuePerToken: 11.2,
-    performance: 12,
     image: "/placeholder.svg?height=32&width=32",
     transactions: [
       { date: "5 Febrero, 2023", amount: 500 },
@@ -706,7 +685,6 @@ const tokensByProject = [
     type: "Histórico",
     totalTokens: 750,
     valuePerToken: 11.2,
-    performance: 12,
     image: "/placeholder.svg?height=32&width=32",
     transactions: [{ date: "10 Marzo, 2023", amount: 750 }],
   },
@@ -717,7 +695,6 @@ const tokensByProject = [
     type: "Frente al mar",
     totalTokens: 200,
     valuePerToken: 15,
-    performance: 50,
     image: "/placeholder.svg?height=32&width=32",
     transactions: [
       { date: "1 Enero, 2023", amount: 100 },
@@ -731,51 +708,50 @@ const tokensByProject = [
     type: "Barrio Cerrado",
     totalTokens: 300,
     valuePerToken: 10.5,
-    performance: 5,
     image: "/placeholder.svg?height=32&width=32",
     transactions: [{ date: "5 Mayo, 2023", amount: 300 }],
   },
-]
+];
 
-const transactions = [
-  {
-    id: 1,
-    type: "distribution",
-    description: "Distribución Trimestral - Terrazas Diez",
-    amount: "$125.00",
-    date: "1 Mayo, 2023",
-    status: "Completado",
-  },
-  {
-    id: 2,
-    type: "investment",
-    description: "Inversión - Terrazas Brown",
-    amount: "$10,000.00",
-    date: "15 Abril, 2023",
-    status: "Completado",
-  },
-  {
-    id: 3,
-    type: "distribution",
-    description: "Distribución Trimestral - Arenas Villarobles",
-    amount: "$75.00",
-    date: "1 Abril, 2023",
-    status: "Completado",
-  },
-  {
-    id: 4,
-    type: "investment",
-    description: "Inversión - Jufré 1085",
-    amount: "$7,500.00",
-    date: "22 Marzo, 2023",
-    status: "Completado",
-  },
-  {
-    id: 5,
-    type: "distribution",
-    description: "Distribución Trimestral - Terrazas Diez",
-    amount: "$125.00",
-    date: "1 Febrero, 2023",
-    status: "Completado",
-  },
-]
+// const transactions = [
+//   {
+//     id: 1,
+//     type: "distribution",
+//     description: "Distribución Trimestral - Terrazas Diez",
+//     amount: "$125.00",
+//     date: "1 Mayo, 2023",
+//     status: "Completado",
+//   },
+//   {
+//     id: 2,
+//     type: "investment",
+//     description: "Inversión - Terrazas Brown",
+//     amount: "$10,000.00",
+//     date: "15 Abril, 2023",
+//     status: "Completado",
+//   },
+//   {
+//     id: 3,
+//     type: "distribution",
+//     description: "Distribución Trimestral - Arenas Villarobles",
+//     amount: "$75.00",
+//     date: "1 Abril, 2023",
+//     status: "Completado",
+//   },
+//   {
+//     id: 4,
+//     type: "investment",
+//     description: "Inversión - Jufré 1085",
+//     amount: "$7,500.00",
+//     date: "22 Marzo, 2023",
+//     status: "Completado",
+//   },
+//   {
+//     id: 5,
+//     type: "distribution",
+//     description: "Distribución Trimestral - Terrazas Diez",
+//     amount: "$125.00",
+//     date: "1 Febrero, 2023",
+//     status: "Completado",
+//   },
+// ];

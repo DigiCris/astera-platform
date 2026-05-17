@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, DollarSign, LineChart, Shield, Users } from "lucide-react";
+import { motion } from "motion/react";
+import { ArrowRight, ChevronRight, DollarSign, ShieldCheck, Shield, Users, Cpu } from "lucide-react";
 import { LoginModal } from "~~/components/auth/login-modal";
 import { SignUpModal } from "~~/components/auth/signup-modal";
 import { MainNav } from "~~/components/main-nav";
@@ -69,9 +70,29 @@ const featuredProjects = [
   },
 ] as const;
 
+// Variantes para animaciones fluidas
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 }
+  }
+};
+
+const itemLeftVariants = {
+  hidden: { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 80, damping: 15 } }
+};
+
+const itemCardVariants = {
+  hidden: { opacity: 0, scale: 0.92, y: 20 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 16 } }
+};
+
 export default function HomePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
@@ -91,21 +112,20 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-black/50"></div>
           <div className="container relative px-4 md:px-6 z-10 flex justify-center items-center">
             <div className="max-w-2xl text-center">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none mb-6">
-                Expertos en Diseño y Desarrollo Urbano
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none mb-6 text-filabe-text">
+                Infraestructura para Activos Digitales Regulados
               </h1>
               <p className="max-w-[600px] mx-auto text-filabe-text/90 md:text-xl mb-8">
-                Construimos hogares y comunidades con una visión de futuro que inspira la innovación. Nuestro compromiso
-                es construir calidad de vida para nuestros clientes.
+                Astera permite emitir y operar activos de mercados financieros modernos mediante infraestructura blockchain con compliance, identidad verificada y reglas de mercado integradas desde el diseño.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row justify-center">
-                <Link href="/projects">
-                  <Button size="lg" className="gap-1.5 bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
-                    Explorar Proyectos <ChevronRight className="h-4 w-4" />
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                  <Button size="lg" className="gap-1.5 bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90 w-full">
+                    Ver GitHub <ChevronRight className="h-4 w-4" />
                   </Button>
-                </Link>
-                <Link href="/how-it-works">
-                  <Button size="lg" variant="outline" className="border-filabe-teal text-filabe-teal">
+                </a>
+                <Link href="/how-it-works" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="border-filabe-teal text-filabe-teal w-full">
                     Cómo Funciona
                   </Button>
                 </Link>
@@ -114,30 +134,101 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Logros */}
-        <section className="bg-filabe-dark py-16">
-          <div className="container px-4 md:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-3xl font-bold mb-4 text-filabe-text">Nuestros Logros</h2>
-                <div className="h-1 w-20 bg-filabe-teal mb-6"></div>
-                <p className="text-filabe-text/80 text-lg">
-                  En Filabe, nos enorgullecemos de nuestro impacto en el desarrollo urbano y la creación de espacios que
-                  mejoran la calidad de vida.
-                </p>
-              </div>
-              <div className="flex items-center justify-center">
-                <div className="text-center">
-                  <span className="text-5xl font-bold text-filabe-teal block">+40</span>
-                  <span className="text-2xl font-medium text-filabe-text">mil m²</span>
-                  <p className="text-filabe-text/70 mt-2">construidos</p>
+        {/* Logros / Infraestructura Rediseñada */}
+        <section className="bg-filabe-dark relative py-20 lg:py-28 overflow-hidden">
+          {/* Sutil brillo de fondo de red de nodos */}
+          <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
+
+          <motion.div
+            className="container relative z-10 px-4 md:px-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+              {/* Bloque Izquierdo del Texto */}
+              <motion.div variants={itemLeftVariants} className="lg:col-span-5 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-filabe-teal/20 bg-filabe-teal/5 text-xs font-medium text-filabe-teal tracking-wide uppercase">
+                  Tecnología Institucional
                 </div>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-filabe-text">
+                  Nuestra Infraestructura
+                </h2>
+                <div className="h-1 w-16 bg-gradient-to-r from-filabe-teal to-transparent rounded-full"></div>
+                <p className="text-filabe-text/80 text-lg leading-relaxed">
+                  En Astera, nos enfocamos en el impacto de la tecnología ledger distribuida para optimizar la liquidez global y automatizar el cumplimiento en mercados financieros permissioned.
+                </p>
+              </motion.div>
+
+              {/* Bloque Derecho: Bento Grid Interactivo con Métricas */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                {/* Card Destacada Principal (100% On-Chain) */}
+                <motion.div
+                  variants={itemCardVariants}
+                  whileHover={{ y: -6, borderHorizontal: "1px solid #00f2fe" }}
+                  className="sm:col-span-2 border border-filabe-lightgray bg-filabe-gray/60 p-8 rounded-2xl relative overflow-hidden backdrop-blur-sm group hover:border-filabe-teal/30 transition-all duration-300"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-filabe-teal/5 rounded-bl-full pointer-events-none group-hover:bg-filabe-teal/10 transition-colors duration-300" />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-filabe-teal/10 text-filabe-teal">
+                          <ShieldCheck className="h-6 w-6" />
+                        </div>
+                        <span className="text-sm font-semibold uppercase tracking-wider text-filabe-teal">Core Protocol</span>
+                      </div>
+                      <h3 className="text-5xl font-black tracking-tight text-filabe-text bg-clip-text">
+                        100%
+                      </h3>
+                      <span className="text-xl font-bold text-filabe-text/90 block">Estructura On-Chain</span>
+                    </div>
+                    <p className="text-filabe-text/70 max-w-xs text-sm sm:text-right leading-relaxed">
+                      Lógica dura de cumplimiento regulatorio, KYC, y control de mercado ejecutándose de manera inmutable en cada bloque.
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Card Sub-Second Finality */}
+                <motion.div
+                  variants={itemCardVariants}
+                  whileHover={{ y: -6 }}
+                  className="border border-filabe-lightgray bg-filabe-gray/40 p-6 rounded-2xl hover:border-filabe-teal/30 transition-all duration-300"
+                >
+                  <div className="p-3 rounded-xl bg-filabe-teal/10 text-filabe-teal w-fit mb-4">
+                    <Cpu className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-filabe-text mb-1">&lt; 1s</h4>
+                  <p className="text-sm font-semibold text-filabe-teal mb-2">Finalidad de Bloque</p>
+                  <p className="text-xs text-filabe-text/60 leading-relaxed">
+                    Operaciones ágiles y predecibles impulsadas por el consenso avanzado de la red Avalanche.
+                  </p>
+                </motion.div>
+
+                {/* Card Enterprise PSAV */}
+                <motion.div
+                  variants={itemCardVariants}
+                  whileHover={{ y: -6 }}
+                  className="border border-filabe-lightgray bg-filabe-gray/40 p-6 rounded-2xl hover:border-filabe-teal/30 transition-all duration-300"
+                >
+                  <div className="p-3 rounded-xl bg-filabe-teal/10 text-filabe-teal w-fit mb-4">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-filabe-text mb-1">PSAV</h4>
+                  <p className="text-sm font-semibold text-filabe-teal mb-2">Modelo de Operación</p>
+                  <p className="text-xs text-filabe-text/60 leading-relaxed">
+                    Arquitectura permissioned pensada de raíz para proveedores de servicios de activos virtuales.
+                  </p>
+                </motion.div>
+
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
-        {/* Featured Projects */}
+        {/* Featured Projects 
         <section className="bg-filabe-dark">
           <div className="filabe-container">
             <div className="flex flex-col items-start justify-center space-y-2 mb-12">
@@ -213,126 +304,192 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+      */}
+        {/* How It Works - Rediseñado e Institucional */}
+        <section className="bg-filabe-gray relative py-20 overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
 
-        {/* How It Works */}
-        <section className="bg-filabe-gray">
-          <div className="filabe-container">
-            <div className="flex flex-col items-start justify-center space-y-2 mb-12">
-              <h2 className="section-heading">Cómo Trabajamos</h2>
-              <p className="max-w-[700px] text-filabe-text/80 md:text-lg">
-                Nuestro proceso está diseñado para garantizar la máxima calidad y satisfacción en cada proyecto que
-                desarrollamos.
+          <div className="filabe-container relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-start justify-center space-y-3 mb-16"
+            >
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-filabe-teal/10 bg-filabe-teal/5 text-xs font-semibold text-filabe-teal uppercase tracking-wider">
+                Workflow de Implementación
+              </div>
+              <h2 className="section-heading text-filabe-text">¿Cómo Trabajamos?</h2>
+              <p className="max-w-[700px] text-filabe-text/80 md:text-lg leading-relaxed">
+                Nuestra infraestructura simplifica la tokenización institucional mediante un proceso estandarizado, seguro y completamente automatizado on-chain.
               </p>
-            </div>
-            <div className="grid grid-cols-1 gap-12 mt-12 md:grid-cols-3">
-              <div className="flex flex-col items-start space-y-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-filabe-teal/20">
-                  <Users className="h-8 w-8 text-filabe-teal" />
+            </motion.div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3"
+            >
+              {/* Paso 1 */}
+              <motion.div
+                variants={itemCardVariants}
+                whileHover={{ y: -6 }}
+                className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal transition-transform duration-300 hover:scale-110">
+                  <Users className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-filabe-text">1. Diseño Personalizado</h3>
-                <p className="text-filabe-text/70">
-                  Trabajamos estrechamente con nuestros clientes para entender sus necesidades y crear espacios que
-                  reflejen su visión y estilo de vida.
+                <h3 className="text-xl font-bold text-filabe-text">1. Onboarding e Identidad</h3>
+                <p className="text-filabe-text/70 text-sm leading-relaxed">
+                  Configuración del entorno permissioned. Vinculamos las reglas de KYC/AML locales directamente a los contratos inteligentes encargados del control de acceso.
                 </p>
-              </div>
-              <div className="flex flex-col items-start space-y-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-filabe-teal/20">
-                  <Shield className="h-8 w-8 text-filabe-teal" />
+              </motion.div>
+
+              {/* Paso 2 */}
+              <motion.div
+                variants={itemCardVariants}
+                whileHover={{ y: -6 }}
+                className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal transition-transform duration-300 hover:scale-110">
+                  <Cpu className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-filabe-text">2. Construcción de Calidad</h3>
-                <p className="text-filabe-text/70">
-                  Utilizamos materiales de primera calidad y las técnicas más avanzadas para garantizar durabilidad,
-                  eficiencia y sostenibilidad en cada proyecto.
+                <h3 className="text-xl font-bold text-filabe-text">2. Emisión Programable</h3>
+                <p className="text-filabe-text/70 text-sm leading-relaxed">
+                  Despliegue y acuñación de los smart contracts del activo digital (RWA), incrustando límites operativos, reglas de transferencia y compliance nativo.
                 </p>
-              </div>
-              <div className="flex flex-col items-start space-y-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-filabe-teal/20">
-                  <DollarSign className="h-8 w-8 text-filabe-teal" />
+              </motion.div>
+
+              {/* Paso 3 */}
+              <motion.div
+                variants={itemCardVariants}
+                whileHover={{ y: -6 }}
+                className="flex flex-col items-start space-y-4 p-6 rounded-2xl border border-filabe-lightgray bg-filabe-dark/30 backdrop-blur-sm hover:border-filabe-teal/30 transition-all duration-300"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal transition-transform duration-300 hover:scale-110">
+                  <DollarSign className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-filabe-text">3. Entrega y Seguimiento</h3>
-                <p className="text-filabe-text/70">
-                  Nos comprometemos con plazos realistas y ofrecemos un servicio posventa excepcional para asegurar la
-                  satisfacción total de nuestros clientes.
+                <h3 className="text-xl font-bold text-filabe-text">3. Ciclo de Vida On-Chain</h3>
+                <p className="text-filabe-text/70 text-sm leading-relaxed">
+                  Automatización total de la distribución de dividendos o rendimientos, gobernanza, auditorías en tiempo real y conciliaciones del mercado primario.
                 </p>
-              </div>
-            </div>
-            <div className="flex justify-center mt-12">
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="flex justify-center mt-14"
+            >
               <Link href="/how-it-works">
-                <Button size="lg" className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
+                <Button size="lg" className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90 shadow-lg shadow-filabe-teal/10 font-semibold px-8 transition-all duration-300 hover:tracking-wide">
                   Conoce Más
                 </Button>
               </Link>
-            </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Filosofía y Valores */}
-        <section className="bg-filabe-dark">
-          <div className="filabe-container">
+        {/* Filosofía y Valores / Nuestra Visión */}
+        <section className="bg-filabe-dark relative py-20 lg:py-28 overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-filabe-teal/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="filabe-container relative z-10">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
-              <div className="flex flex-col justify-center space-y-6">
-                <div>
-                  <h2 className="section-heading">Nuestra Filosofía</h2>
-                  <p className="max-w-[600px] text-filabe-text/80 md:text-lg mt-6">
-                    En Filabe, aspiramos a ser líderes en América Latina en desarrollos inmobiliarios que generen
-                    bienestar y satisfacción, construyendo comunidades sostenibles que maximizan la calidad de vida con
-                    un menor impacto ambiental.
+
+              {/* Bloque Izquierdo con Lista Escalonada */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                className="flex flex-col justify-center space-y-6"
+              >
+                <motion.div variants={itemLeftVariants}>
+                  <h2 className="section-heading text-filabe-text">Nuestra Visión</h2>
+                  <p className="max-w-[600px] text-filabe-text/80 md:text-lg mt-4 leading-relaxed">
+                    En Astera, transformamos los mercados financieros mediante una capa regulatoria on-chain eficiente. Proporcionamos a fintechs, PSAVs e instituciones la infraestructura tecnológica necesaria para operar activos digitales con total seguridad jurídica y control operativo absoluto.
                   </p>
-                </div>
-                <ul className="grid gap-6">
-                  <li className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0">
-                      <DollarSign className="h-5 w-5 text-filabe-teal" />
+                </motion.div>
+
+                <ul className="grid gap-6 mt-4">
+                  {/* Item 1 */}
+                  <motion.li variants={itemCardVariants} className="flex items-start gap-4 p-4 rounded-xl transition-colors duration-300 hover:bg-filabe-gray/30 group">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal shrink-0 group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300">
+                      <ShieldCheck className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Confianza</h3>
-                      <p className="text-filabe-text/70">
-                        Construimos relaciones sólidas basadas en la honestidad y el cumplimiento de nuestros
-                        compromisos.
+                      <h3 className="font-bold text-filabe-text text-base transition-colors duration-200 group-hover:text-filabe-teal">Compliance-Native</h3>
+                      <p className="text-filabe-text/70 text-sm mt-1 leading-relaxed">
+                        Reglas de mercado, límites operativos, procesos de freeze y validaciones integradas directamente en el diseño del protocolo.
                       </p>
                     </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0">
-                      <Shield className="h-5 w-5 text-filabe-teal" />
+                  </motion.li>
+
+                  {/* Item 2 */}
+                  <motion.li variants={itemCardVariants} className="flex items-start gap-4 p-4 rounded-xl transition-colors duration-300 hover:bg-filabe-gray/30 group">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal shrink-0 group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300">
+                      <Shield className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Transparencia</h3>
-                      <p className="text-filabe-text/70">
-                        Comunicamos de manera clara y abierta todos los aspectos de nuestros proyectos y procesos.
+                      <h3 className="font-bold text-filabe-text text-base transition-colors duration-200 group-hover:text-filabe-teal">Identidad y Control</h3>
+                      <p className="text-filabe-text/70 text-sm mt-1 leading-relaxed">
+                        Vinculación inmutable de identidades verificadas (KYC) a nivel de smart contract, mitigando riesgos operativos y regulatorios.
                       </p>
                     </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0">
-                      <LineChart className="h-5 w-5 text-filabe-teal" />
+                  </motion.li>
+
+                  {/* Item 3 */}
+                  <motion.li variants={itemCardVariants} className="flex items-start gap-4 p-4 rounded-xl transition-colors duration-300 hover:bg-filabe-gray/30 group">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-filabe-teal/10 text-filabe-teal shrink-0 group-hover:bg-filabe-teal group-hover:text-filabe-dark transition-all duration-300">
+                      <Cpu className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-filabe-text">Innovación</h3>
-                      <p className="text-filabe-text/70">
-                        Buscamos constantemente nuevas soluciones y tecnologías para mejorar nuestros desarrollos y
-                        procesos.
+                      <h3 className="font-bold text-filabe-text text-base transition-colors duration-200 group-hover:text-filabe-teal">Arquitectura Abierta</h3>
+                      <p className="text-filabe-text/70 text-sm mt-1 leading-relaxed">
+                        Infraestructura modular sin custodia forzada que permite a terceros construir experiencias financieras a medida (White-label).
                       </p>
                     </div>
-                  </li>
+                  </motion.li>
                 </ul>
-              </div>
-              <div className="mx-auto w-full max-w-[500px] lg:max-w-none">
-                <div className="aspect-square overflow-hidden rounded-md">
+              </motion.div>
+
+              {/* Bloque Derecho con Frame de Imagen Animado */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, x: 40 }}
+                whileInView={{ opacity: 1, scale: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 60, damping: 15 }}
+                className="mx-auto w-full max-w-[500px] lg:max-w-none relative"
+              >
+                {/* Glowing neon background border aura */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-filabe-teal/20 to-transparent rounded-2xl blur-xl" />
+
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  className="aspect-square overflow-hidden rounded-2xl border border-filabe-lightgray bg-filabe-gray/40 p-2 backdrop-blur-sm shadow-2xl shadow-black/40"
+                >
                   <Image
-                    src="/placeholder.svg?height=800&width=800"
-                    alt="Desarrollo inmobiliario Filabe"
+                    src="/astera_favicon_256.png"
+                    alt="Infraestructura Blockchain Astera"
                     width={800}
                     height={800}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full rounded-xl brightness-95 contrast-105"
                   />
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
+
             </div>
           </div>
         </section>
 
-        {/* Testimonios */}
+        {/* Testimonios 
         <section className="bg-filabe-gray py-16">
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
@@ -373,6 +530,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+      */}
 
         {/* CTA */}
         <section className="bg-filabe-teal text-filabe-dark">
@@ -414,10 +572,9 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div>
-              <div className="text-filabe-text font-bold text-xl">FILABE</div>
+              <div className="text-filabe-text font-bold text-xl">ASTERA</div>
               <p className="mt-4 text-sm text-filabe-text/70 max-w-xs">
-                Transformamos la ciudad para que puedas transformar tu vida. Inversión inmobiliaria accesible para
-                todos.
+                Astera permite emitir y operar activos digitales regulados mediante infraestructura blockchain con compliance e identidad verificada.
               </p>
               <div className="flex gap-4 mt-6">
                 <a href="#" className="text-filabe-text/70 hover:text-filabe-teal">
@@ -471,99 +628,52 @@ export default function HomePage() {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Oficinas</h3>
+              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Infraestructura</h3>
               <ul className="space-y-4">
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Berazategui</p>
-                  <p>Av. Mitre 799, B1880 Berazategui</p>
-                  <p>Provincia de Buenos Aires</p>
-                  <p>Tel: (+54) 11 5612-9008</p>
+                  <p className="font-medium text-filabe-text">Identidad Integrada</p>
+                  <p>Unificación de la lógica de mercado con validación KYC directamente en el core del protocolo.</p>
                 </li>
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Puerto Madero</p>
-                  <p>Lola Mora 421 Of. 401, CABA</p>
+                  <p className="font-medium text-filabe-text">Restricciones Automatizadas</p>
+                  <p>Reglas de cumplimiento normativo y límites operativos integrados nativamente desde el diseño.</p>
                 </li>
                 <li className="text-filabe-text/70">
-                  <p className="font-medium text-filabe-text">Villarobles</p>
-                  <p>Ruta 11 KM. 374, Villarobles</p>
-                  <p>Tel: (+54) 11 5613-3057</p>
+                  <p className="font-medium text-filabe-text">Mercado Secundario</p>
+                  <p>Trazabilidad completa y control de operaciones sin necesidad de estructuras de custodia centralizadas.</p>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Contacto</h3>
+              <h3 className="text-lg font-semibold mb-4 text-filabe-text">Documentación</h3>
               <ul className="space-y-2 text-filabe-text/70">
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                  </svg>
-                  <span>(+54) 11 5612-9008</span>
+                <li>
+                  <Link href="/terminos-y-condiciones" className="hover:text-filabe-teal transition-colors">
+                    Términos y Condiciones
+                  </Link>
                 </li>
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                  </svg>
-                  <span>hola@filabe.com.ar</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5"
-                  >
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                  </svg>
-                  <span>@filabe.ar</span>
+                <li>
+                  <Link href="/privacidad" className="hover:text-filabe-teal transition-colors">
+                    Política de Privacidad
+                  </Link>
                 </li>
               </ul>
 
-              <h3 className="text-lg font-semibold mb-4 mt-6 text-filabe-text">Preguntas Frecuentes</h3>
+              <h3 className="text-lg font-semibold mb-4 mt-6 text-filabe-text">Arquitectura</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/about#faq-financiamiento" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Ofrecen opciones de financiamiento?
+                  <Link href="/about#smart-contracts" className="text-filabe-text/70 hover:text-filabe-teal">
+                    ¿Cómo funcionan las reglas de mercado?
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#faq-permutas" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Aceptan permutas como parte de pago?
+                  <Link href="/about#compliance" className="text-filabe-text/70 hover:text-filabe-teal">
+                    Garantía de compliance regulatorio
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#faq-posventa" className="text-filabe-text/70 hover:text-filabe-teal">
-                    ¿Qué tipo de servicio posventa ofrecen?
+                  <Link href="/about#non-custodial" className="text-filabe-text/70 hover:text-filabe-teal">
+                    Modelos operativos no custodios
                   </Link>
                 </li>
               </ul>
@@ -571,13 +681,12 @@ export default function HomePage() {
           </div>
           <div className="border-t border-filabe-lightgray mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-filabe-text/70">
-              &copy; {new Date().getFullYear()} SUAREZ FILABE SA. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
             </p>
-            <p className="text-sm text-filabe-text/70 mt-2 md:mt-0">San Martín Calle 52 654 88, Quilmes, B1878FQN</p>
+            <p className="text-sm text-filabe-text/70 mt-2 md:mt-0">Ecosistema Blockchain y Activos Digitales Regulados</p>
           </div>
         </div>
       </footer>
-
       {/* Auth Modals */}
       <LoginModal open={showLoginModal} onOpenChange={setShowLoginModal} />
       <SignUpModal open={showSignUpModal} onOpenChange={setShowSignUpModal} />

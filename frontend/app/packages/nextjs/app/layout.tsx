@@ -5,8 +5,8 @@ import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
 export const metadata = getMetadata({
-  title: "Scaffold-ETH 2 App",
-  description: "Built with 🏗 Scaffold-ETH 2",
+  title: "Astera Finance",
+  description: "Astera permite emitir y operar activos digitales regulados mediante infraestructura blockchain con compliance, identidad verificada y reglas de mercado integradas desde el diseño.",
 });
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
