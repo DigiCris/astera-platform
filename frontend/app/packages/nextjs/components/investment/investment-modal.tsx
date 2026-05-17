@@ -199,7 +199,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
   // ── El step del fideicomiso se muestra cuando NO es compliant ────────
   const fideicomisoStep = !isCompliant ? 1 : null; // step 1 si no es compliant
   const amountStep = isCompliant ? 1 : 2;
-  const termsStep = isCompliant ? 2 : 3;
   const paymentStep = isCompliant ? 3 : 4;
 
   return (
@@ -318,7 +317,7 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
 
             <div className="space-y-2">
               <Label htmlFor="investment-amount" className="text-filabe-text">
-                Monto de Inversión ($)
+                Monto de Inversión (USDC)
               </Label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-filabe-text/70" />
@@ -357,42 +356,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        )}
-
-        {/* ── STEP TÉRMINOS ── */}
-        {step === termsStep && (
-          <div className="space-y-4 py-2">
-            <div className="p-4 bg-filabe-dark rounded-lg border border-filabe-lightgray">
-              <h3 className="font-medium mb-2 text-filabe-text">Términos y Condiciones</h3>
-              <div className="max-h-48 overflow-y-auto text-sm text-filabe-text/70 p-2 border rounded-md bg-filabe-gray border-filabe-lightgray">
-                <p className="mb-2">Yo, el abajo firmante, declaro que:</p>
-                <ol className="list-decimal pl-5 space-y-2">
-                  <li>Toda la información proporcionada es verdadera, precisa y completa.</li>
-                  <li>Los fondos provienen de fuentes legítimas.</li>
-                  <li>Entiendo que las inversiones inmobiliarias implican riesgos.</li>
-                  <li>Esta inversión está sujeta a los plazos establecidos en el contrato.</li>
-                  <li>He revisado todos los documentos y comprendo los términos.</li>
-                  <li>Realizo esta inversión basándome en mi propia evaluación independiente.</li>
-                </ol>
-              </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="terms"
-                checked={acceptedTerms}
-                onCheckedChange={checked => setAcceptedTerms(!!checked)}
-                className="border-filabe-lightgray data-[state=checked]:bg-filabe-teal data-[state=checked]:border-filabe-teal mt-1"
-              />
-              <div className="grid gap-1.5 leading-none">
-                <label htmlFor="terms" className="text-sm font-medium leading-none text-filabe-text">
-                  Acepto los términos y condiciones
-                </label>
-                <p className="text-sm text-filabe-text/70">
-                  Al marcar esta casilla, confirmo que he leído y acepto los términos anteriores.
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -456,7 +419,6 @@ export function InvestmentModal({ trigger, open, onOpenChange, project }: Invest
               disabled={
                 (step === fideicomisoStep && !proofFile) || // 👈 bloquea si no firmó el fideicomiso
                 (step === amountStep && !isAmountValid()) ||
-                (step === termsStep && !acceptedTerms) ||
                 isSigning
               }
               className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"

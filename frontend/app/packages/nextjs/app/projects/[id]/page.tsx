@@ -18,30 +18,14 @@ import {
   PieChart,
   User,
 } from "lucide-react";
-
 import { InvestmentModal } from "~~/components/investment/investment-modal";
-
+import { MainNav } from "~~/components/main-nav";
 import { Button } from "~~/components/ui/shadcn/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~~/components/ui/shadcn/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~~/components/ui/shadcn/card";
 import { Progress } from "~~/components/ui/shadcn/progress";
 import { Separator } from "~~/components/ui/shadcn/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "~~/components/ui/shadcn/sheet";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~~/components/ui/shadcn/tabs";
+import { Sheet, SheetContent, SheetTrigger } from "~~/components/ui/shadcn/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~~/components/ui/shadcn/tabs";
 
 const projects = [
   {
@@ -50,13 +34,12 @@ const projects = [
     location: "Zermatt, Suiza",
     type: "Energía Renovable",
     features: "Micro-grid solar, contratos PPA firmados",
-    minimumInvestment: 10000,
+    minimumInvestment: 1,
     targetReturn: 12,
     fundingProgress: 75,
     timeLeft: 12,
     featured: true,
-    image:
-      "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: 2,
@@ -64,13 +47,12 @@ const projects = [
     location: "Frankfurt, Alemania",
     type: "Infraestructura Tech",
     features: "Tier IV Data Center, refrigeración líquida",
-    minimumInvestment: 25000,
+    minimumInvestment: 1,
     targetReturn: 14,
     fundingProgress: 60,
     timeLeft: 18,
     featured: false,
-    image:
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: 3,
@@ -78,13 +60,12 @@ const projects = [
     location: "Puerto de Rotterdam, Países Bajos",
     type: "Logística Industrial",
     features: "Distribución automatizada, AI drone delivery ready",
-    minimumInvestment: 15000,
+    minimumInvestment: 1,
     targetReturn: 9.5,
     fundingProgress: 40,
     timeLeft: 24,
     featured: false,
-    image:
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: 4,
@@ -92,36 +73,29 @@ const projects = [
     location: "Maldivas, Océano Índico",
     type: "Hotelería Luxury",
     features: "Eco-resort 5 estrellas, yields por ocupación on-chain",
-    minimumInvestment: 50000,
+    minimumInvestment: 1,
     targetReturn: 18.5,
     fundingProgress: 85,
     timeLeft: 6,
     featured: true,
-    image:
-      "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: 5,
     title: "Horizon Wind Farm",
     location: "Austin, Texas, EE. UU.",
     type: "Eólico Core",
-    features:
-      "Turbinas de última generación, subsidios ITC aprobados",
-    minimumInvestment: 5000,
+    features: "Turbinas de última generación, subsidios ITC aprobados",
+    minimumInvestment: 1,
     targetReturn: 8.8,
     fundingProgress: 25,
     timeLeft: 30,
     featured: false,
-    image:
-      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=600&auto=format&fit=crop",
   },
 ];
 
-export default function ProjectPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function ProjectPage({ params }: { params: { id: string } }) {
   const [showInvestmentModal, setShowInvestmentModal] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -157,14 +131,10 @@ export default function ProjectPage({
     return (
       <div className="min-h-screen flex items-center justify-center bg-filabe-dark">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-filabe-text">
-            Proyecto no encontrado
-          </h1>
+          <h1 className="text-3xl font-bold text-filabe-text">Proyecto no encontrado</h1>
 
           <Link href="/projects">
-            <Button className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">
-              Volver a proyectos
-            </Button>
+            <Button className="bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90">Volver a proyectos</Button>
           </Link>
         </div>
       </div>
@@ -172,8 +142,7 @@ export default function ProjectPage({
   }
 
   const totalFunding = project.minimumInvestment * 100;
-  const currentFunding =
-    (totalFunding * project.fundingProgress) / 100;
+  const currentFunding = (totalFunding * project.fundingProgress) / 100;
 
   const investmentHighlights = [
     project.features,
@@ -200,128 +169,24 @@ export default function ProjectPage({
     {
       name: "Starter",
       amount: project.minimumInvestment,
-      benefits: [
-        "Acceso al proyecto",
-        "Dashboard de seguimiento",
-      ],
+      benefits: ["Acceso al proyecto", "Dashboard de seguimiento"],
     },
     {
       name: "Professional",
       amount: project.minimumInvestment * 2,
-      benefits: [
-        "Acceso prioritario",
-        "Reportes premium",
-        "Invitaciones privadas",
-      ],
+      benefits: ["Acceso prioritario", "Reportes premium", "Invitaciones privadas"],
     },
     {
       name: "Institutional",
       amount: project.minimumInvestment * 5,
-      benefits: [
-        "Asignación preferencial",
-        "Asesor dedicado",
-        "Eventos exclusivos",
-      ],
+      benefits: ["Asignación preferencial", "Asesor dedicado", "Eventos exclusivos"],
     },
   ];
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-filabe-lightgray bg-filabe-dark/95 backdrop-blur supports-backdrop-filter:bg-filabe-dark/60">
-        <div className="container flex h-16 items-center justify-between">
-          <Link
-            href="/"
-            className="text-filabe-text font-bold text-xl flex items-center gap-2"
-          >
-            <img
-              src="/favicon.png"
-              alt="icon"
-              className="h-16 w-16"
-            />
-
-            <span>ASTERA</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-sm font-medium text-filabe-text"
-            >
-              Inicio
-            </Link>
-
-            <Link
-              href="/projects"
-              className="text-sm font-medium text-filabe-text"
-            >
-              Proyectos
-            </Link>
-
-            <Link
-              href="/how-it-works"
-              className="text-sm font-medium text-filabe-text"
-            >
-              ¿Cómo Funciona?
-            </Link>
-
-            <Link
-              href="/about"
-              className="text-sm font-medium text-filabe-text"
-            >
-              Nosotros
-            </Link>
-
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-filabe-text"
-            >
-              Mi Balance
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-4">
-            {/* Mobile */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden text-filabe-text hover:text-filabe-teal"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-
-              <SheetContent side="left" className="p-0">
-                <div className="flex h-full flex-col">
-                  <div className="border-b px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-6 w-6 text-primary" />
-                      <span className="text-xl font-bold">
-                        ASTERA
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-
-            <div className="hidden md:flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-filabe-teal/20 flex items-center justify-center">
-                <span className="text-sm font-medium text-filabe-teal">
-                  JS
-                </span>
-              </div>
-
-              <span className="text-sm font-medium text-filabe-text">
-                Juan Suarez
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <MainNav />
       {/* MAIN */}
       <main className="flex-1 bg-filabe-dark">
         <div className="container px-4 py-8 md:px-6 md:py-12">
@@ -337,103 +202,58 @@ export default function ProjectPage({
             {/* LEFT */}
             <div className="lg:col-span-2 space-y-8">
               <div className="space-y-4">
-                <h1 className="text-3xl font-bold text-filabe-text">
-                  {project.title}
-                </h1>
+                <h1 className="text-3xl font-bold text-filabe-text">{project.title}</h1>
 
                 <div className="flex items-center gap-2 text-filabe-text/70">
                   <MapPin className="h-4 w-4" />
-
                   <span>{project.location}</span>
-
                   <span className="mx-2">•</span>
-
                   <Building2 className="h-4 w-4" />
-
                   <span>{project.type}</span>
                 </div>
               </div>
 
               <div className="relative aspect-video overflow-hidden rounded-lg">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover"
-                />
+                <Image src={project.image} alt={project.title} fill className="object-cover" />
               </div>
 
               <Tabs defaultValue="overview">
                 <TabsList className="grid w-full grid-cols-4 bg-filabe-gray">
-                  <TabsTrigger value="overview">
-                    Descripción
-                  </TabsTrigger>
-
-                  <TabsTrigger value="financials">
-                    Financiación
-                  </TabsTrigger>
-
-                  <TabsTrigger value="documents">
-                    Documentos
-                  </TabsTrigger>
-
-                  <TabsTrigger value="updates">
-                    Actualizaciones
-                  </TabsTrigger>
+                  <TabsTrigger value="overview">Descripción</TabsTrigger>
+                  <TabsTrigger value="financials">Financiación</TabsTrigger>
+                  <TabsTrigger value="documents">Documentos</TabsTrigger>
+                  <TabsTrigger value="updates">Actualizaciones</TabsTrigger>
                 </TabsList>
 
                 {/* Overview */}
                 <TabsContent value="overview" className="pt-4">
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-xl font-bold mb-2 text-filabe-text">
-                        Descripción del Proyecto
-                      </h3>
-
-                      <p className="text-filabe-text/70">
-                        {project.features}
-                      </p>
+                      <h3 className="text-xl font-bold mb-2 text-filabe-text">Descripción del Proyecto</h3>
+                      <p className="text-filabe-text/70">{project.features}</p>
                     </div>
 
                     <div>
-                      <h3 className="text-xl font-bold mb-2 text-filabe-text">
-                        Características Destacadas
-                      </h3>
+                      <h3 className="text-xl font-bold mb-2 text-filabe-text">Características Destacadas</h3>
 
                       <ul className="space-y-2">
-                        {investmentHighlights.map(
-                          (highlight, index) => (
-                            <li
-                              key={index}
-                              className="flex items-start gap-2"
-                            >
-                              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-filabe-teal shrink-0" />
-
-                              <span className="text-filabe-text/70">
-                                {highlight}
-                              </span>
-                            </li>
-                          ),
-                        )}
+                        {investmentHighlights.map((highlight, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-filabe-teal shrink-0" />
+                            <span className="text-filabe-text/70">{highlight}</span>
+                          </li>
+                        ))}
                       </ul>
                     </div>
 
                     <div>
-                      <h3 className="text-xl font-bold mb-2 text-filabe-text">
-                        Factores de Riesgo
-                      </h3>
+                      <h3 className="text-xl font-bold mb-2 text-filabe-text">Factores de Riesgo</h3>
 
                       <ul className="space-y-2">
                         {riskFactors.map((risk, index) => (
-                          <li
-                            key={index}
-                            className="flex items-start gap-2"
-                          >
+                          <li key={index} className="flex items-start gap-2">
                             <div className="mt-1 h-1.5 w-1.5 rounded-full bg-red-500 shrink-0" />
-
-                            <span className="text-filabe-text/70">
-                              {risk}
-                            </span>
+                            <span className="text-filabe-text/70">{risk}</span>
                           </li>
                         ))}
                       </ul>
@@ -446,71 +266,43 @@ export default function ProjectPage({
                   <div className="grid gap-4 md:grid-cols-2">
                     <Card className="bg-filabe-gray border-filabe-lightgray">
                       <CardHeader>
-                        <CardTitle className="text-filabe-text">
-                          Resumen de Inversión
-                        </CardTitle>
+                        <CardTitle className="text-filabe-text">Resumen de Inversión</CardTitle>
                       </CardHeader>
 
                       <CardContent className="space-y-4">
                         <div className="flex justify-between">
-                          <span className="text-filabe-text/70">
-                            Objetivo
-                          </span>
-
-                          <span className="font-medium text-filabe-text">
-                            $
-                            {totalFunding.toLocaleString()}
-                          </span>
+                          <span className="text-filabe-text/70">Objetivo</span>
+                          <span className="font-medium text-filabe-text">${totalFunding.toLocaleString()}</span>
                         </div>
 
                         <div className="flex justify-between">
-                          <span className="text-filabe-text/70">
-                            Retorno Objetivo
-                          </span>
-
-                          <span className="font-medium text-filabe-text">
-                            {project.targetReturn}%
-                          </span>
+                          <span className="text-filabe-text/70">Retorno Objetivo</span>
+                          <span className="font-medium text-filabe-text">{project.targetReturn}%</span>
                         </div>
 
                         <div className="flex justify-between">
-                          <span className="text-filabe-text/70">
-                            Tiempo Restante
-                          </span>
-
-                          <span className="font-medium text-filabe-text">
-                            {project.timeLeft} meses
-                          </span>
+                          <span className="text-filabe-text/70">Tiempo Restante</span>
+                          <span className="font-medium text-filabe-text">{project.timeLeft} meses</span>
                         </div>
                       </CardContent>
                     </Card>
 
                     <Card className="bg-filabe-gray border-filabe-lightgray">
                       <CardHeader>
-                        <CardTitle className="text-filabe-text">
-                          Métricas
-                        </CardTitle>
+                        <CardTitle className="text-filabe-text">Métricas</CardTitle>
                       </CardHeader>
 
                       <CardContent className="space-y-4">
                         <div className="flex justify-between">
-                          <span className="text-filabe-text/70">
-                            Progreso
-                          </span>
+                          <span className="text-filabe-text/70">Progreso</span>
 
-                          <span className="font-medium text-filabe-text">
-                            {project.fundingProgress}%
-                          </span>
+                          <span className="font-medium text-filabe-text">{project.fundingProgress}%</span>
                         </div>
 
                         <div className="flex justify-between">
-                          <span className="text-filabe-text/70">
-                            Tipo de Proyecto
-                          </span>
+                          <span className="text-filabe-text/70">Tipo de Proyecto</span>
 
-                          <span className="font-medium text-filabe-text">
-                            {project.type}
-                          </span>
+                          <span className="font-medium text-filabe-text">{project.type}</span>
                         </div>
                       </CardContent>
                     </Card>
@@ -521,10 +313,7 @@ export default function ProjectPage({
                 <TabsContent value="documents" className="pt-4">
                   <div className="grid gap-4 md:grid-cols-2">
                     {documents.map((doc, index) => (
-                      <Card
-                        key={index}
-                        className="bg-filabe-gray border-filabe-lightgray"
-                      >
+                      <Card key={index} className="bg-filabe-gray border-filabe-lightgray">
                         <CardContent className="p-4">
                           <div className="flex items-center gap-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-filabe-teal/20">
@@ -532,19 +321,12 @@ export default function ProjectPage({
                             </div>
 
                             <div className="flex-1">
-                              <p className="font-medium text-filabe-text">
-                                {doc.name}
-                              </p>
+                              <p className="font-medium text-filabe-text">{doc.name}</p>
 
-                              <p className="text-sm text-filabe-text/70">
-                                Documento {doc.type}
-                              </p>
+                              <p className="text-sm text-filabe-text/70">Documento {doc.type}</p>
                             </div>
 
-                            <Button
-                              variant="outline"
-                              size="sm"
-                            >
+                            <Button variant="outline" size="sm">
                               Ver
                             </Button>
                           </div>
@@ -559,13 +341,9 @@ export default function ProjectPage({
                   <div className="text-center py-8">
                     <Info className="h-12 w-12 mx-auto text-filabe-text/70 mb-4" />
 
-                    <h3 className="text-xl font-bold mb-2 text-filabe-text">
-                      Sin Actualizaciones
-                    </h3>
+                    <h3 className="text-xl font-bold mb-2 text-filabe-text">Sin Actualizaciones</h3>
 
-                    <p className="text-filabe-text/70">
-                      Las actualizaciones del proyecto aparecerán aquí.
-                    </p>
+                    <p className="text-filabe-text/70">Las actualizaciones del proyecto aparecerán aquí.</p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -575,9 +353,7 @@ export default function ProjectPage({
             <div className="space-y-6">
               <Card className="sticky top-24 bg-filabe-gray border-filabe-lightgray">
                 <CardHeader>
-                  <CardTitle className="text-filabe-text">
-                    Detalles de Inversión
-                  </CardTitle>
+                  <CardTitle className="text-filabe-text">Detalles de Inversión</CardTitle>
 
                   <CardDescription className="text-filabe-text/70">
                     {project.fundingProgress}% financiado
@@ -585,92 +361,60 @@ export default function ProjectPage({
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                  <Progress
-                    value={project.fundingProgress}
-                    className="h-2 bg-filabe-lightgray"
-                  />
+                  <Progress value={project.fundingProgress} className="h-2 bg-filabe-lightgray" />
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-filabe-text/70">
-                        Recaudado
-                      </p>
+                      <p className="text-sm text-filabe-text/70">Recaudado</p>
 
-                      <p className="text-2xl font-bold text-filabe-text">
-                        $
-                        {currentFunding.toLocaleString()}
-                      </p>
+                      <p className="text-2xl font-bold text-filabe-text">${currentFunding.toLocaleString()}</p>
                     </div>
 
                     <div>
-                      <p className="text-sm text-filabe-text/70">
-                        Tiempo
-                      </p>
+                      <p className="text-sm text-filabe-text/70">Tiempo</p>
 
-                      <p className="text-2xl font-bold text-filabe-text">
-                        {project.timeLeft}m
-                      </p>
+                      <p className="text-2xl font-bold text-filabe-text">{project.timeLeft}m</p>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <p className="text-sm text-filabe-text/70">
-                        Inversión mínima
-                      </p>
+                      <p className="text-sm text-filabe-text/70">Inversión mínima</p>
 
-                      <p className="font-medium text-filabe-text">
-                        $
-                        {project.minimumInvestment.toLocaleString()}
-                      </p>
+                      <p className="font-medium text-filabe-text">${project.minimumInvestment.toLocaleString()}</p>
                     </div>
 
                     <div className="flex justify-between">
-                      <p className="text-sm text-filabe-text/70">
-                        Retorno objetivo
-                      </p>
+                      <p className="text-sm text-filabe-text/70">Retorno objetivo</p>
 
-                      <p className="font-medium text-filabe-text">
-                        {project.targetReturn}%
-                      </p>
+                      <p className="font-medium text-filabe-text">{project.targetReturn}%</p>
                     </div>
                   </div>
 
                   <Separator className="bg-filabe-lightgray" />
 
                   <div className="space-y-4">
-                    <h4 className="font-medium text-filabe-text">
-                      Niveles de Inversión
-                    </h4>
+                    <h4 className="font-medium text-filabe-text">Niveles de Inversión</h4>
 
                     {investmentTiers.map((tier, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start gap-4"
-                      >
+                      <div key={index} className="flex items-start gap-4">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-filabe-teal/20 shrink-0 mt-0.5">
                           <DollarSign className="h-3 w-3 text-filabe-teal" />
                         </div>
 
                         <div className="space-y-1">
                           <p className="font-medium text-filabe-text">
-                            {tier.name} - $
-                            {tier.amount.toLocaleString()}
+                            {tier.name} - ${tier.amount.toLocaleString()}
                           </p>
 
                           <ul className="text-sm text-filabe-text/70">
-                            {tier.benefits.map(
-                              (benefit, i) => (
-                                <li
-                                  key={i}
-                                  className="flex items-start gap-2"
-                                >
-                                  <div className="mt-1.5 h-1 w-1 rounded-full bg-filabe-teal shrink-0" />
+                            {tier.benefits.map((benefit, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <div className="mt-1.5 h-1 w-1 rounded-full bg-filabe-teal shrink-0" />
 
-                                  <span>{benefit}</span>
-                                </li>
-                              ),
-                            )}
+                                <span>{benefit}</span>
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -680,9 +424,7 @@ export default function ProjectPage({
                   <Button
                     className="w-full bg-filabe-teal text-filabe-dark hover:bg-filabe-teal/90"
                     size="lg"
-                    onClick={() =>
-                      setShowInvestmentModal(true)
-                    }
+                    onClick={() => setShowInvestmentModal(true)}
                   >
                     Invertir Ahora
                   </Button>
@@ -699,35 +441,23 @@ export default function ProjectPage({
           <div className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-filabe-teal" />
 
-            <span className="text-xl font-bold text-filabe-text">
-              ASTERA
-            </span>
+            <span className="text-xl font-bold text-filabe-text">ASTERA</span>
           </div>
 
           <p className="text-center text-sm text-filabe-text/70">
-            &copy; {new Date().getFullYear()} ASTERA.
-            Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ASTERA. Todos los derechos reservados.
           </p>
 
           <div className="flex gap-4">
-            <Link
-              href="/terms"
-              className="text-sm text-filabe-text/70 hover:text-filabe-teal"
-            >
+            <Link href="/terms" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
               Términos
             </Link>
 
-            <Link
-              href="/privacy"
-              className="text-sm text-filabe-text/70 hover:text-filabe-teal"
-            >
+            <Link href="/privacy" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
               Privacidad
             </Link>
 
-            <Link
-              href="/contact"
-              className="text-sm text-filabe-text/70 hover:text-filabe-teal"
-            >
+            <Link href="/contact" className="text-sm text-filabe-text/70 hover:text-filabe-teal">
               Contacto
             </Link>
           </div>
